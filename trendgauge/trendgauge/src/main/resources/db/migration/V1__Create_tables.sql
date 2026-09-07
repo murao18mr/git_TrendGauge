@@ -1,0 +1,120 @@
+CREATE TABLE IF NOT EXISTS trendgauge_db.companies (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '企業ID',
+    company_name VARCHAR(100) NOT NULL COMMENT '企業名',
+    company_code VARCHAR(20) NOT NULL UNIQUE COMMENT '企業コード',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登録日時', 
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時'
+)COMMENT '企業テーブル';
+
+CREATE TABLE IF NOT EXISTS trendgauge_db.mappings(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'マッピングID', 
+    name VARCHAR(50) NOT NULL COMMENT '設定名',
+    date_column INT NOT NULL COMMENT '日付列番号',
+    amount_column INT NOT NULL COMMENT '日次売上金額列番号',
+    customer_column INT COMMENT '客数列番号',
+    category_column INT COMMENT 'カテゴリ列番号',
+    color_column INT COMMENT 'カラー列番号',
+    quantity_column INT COMMENT '数量列番号',
+    subtotal_column INT COMMENT '小計列番号',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登録日時',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時'
+)COMMENT 'CSVマッピング設定テーブル';
+
+CREATE TABLE IF NOT EXISTS trendgauge_db.stores(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '店舗ID',
+    company_id BIGINT NOT NULL COMMENT '企業ID',
+    mapping_id BIGINT COMMENT 'マッピングID',
+    store_name VARCHAR(100) NOT NULL COMMENT '店舗名',
+    store_code VARCHAR(20) NOT NULL UNIQUE COMMENT '店舗コード',
+    status VARCHAR(20) NOT NULL DEFAULT 'active' COMMENT '店舗状態',
+    manager_pin VARCHAR(255) NOT NULL COMMENT '店長PIN',
+    opening_time TIME COMMENT '開店時間',
+    closing_time TIME COMMENT '閉店時間',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登録日時',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+    FOREIGN KEY (company_id) REFERENCES companies(id),
+    FOREIGN KEY (mapping_id) REFERENCES mappings(id)
+)COMMENT '店舗テーブル';
+
+
+CREATE TABLE IF NOT EXISTS trendgauge_db.users(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'ユーザーID',
+    company_id BIGINT NOT NULL COMMENT '企業ID',
+    email VARCHAR(255) NOT NULL UNIQUE COMMENT 'メールアドレス',
+    password VARCHAR(255) NOT NULL COMMENT 'パスワード',
+    role VARCHAR(20) NOT NULL COMMENT '権限・ロール admin, store_manager, store_terminal',
+    store_id BIGINT COMMENT '店舗ID',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登録日時',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+    FOREIGN KEY (company_id) REFERENCES companies(id),
+    FOREIGN KEY (store_id) REFERENCES stores(id)
+)COMMENT 'ユーザーテーブル';
+
+CREATE TABLE IF NOT EXISTS trendgauge_db.integrations(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '連携設定用ID',
+    store_id BIGINT NOT NULL UNIQUE COMMENT '店舗ID',
+    pos_type VARCHAR(20) NOT NULL COMMENT 'POS種別',
+    contract_id VARCHAR(100) COMMENT '契約者ID',
+    api_key VARCHAR(255) NOT NULL COMMENT 'APIキー',
+    auto_sync BOOLEAN NOT NULL DEFAULT TRUE COMMENT '自動同期フラグ',
+    sync_time VARCHAR(5) NOT NULL DEFAULT '02:00' COMMENT '同期実行時刻',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登録日時',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+    FOREIGN KEY (store_id) REFERENCES stores(id)
+)COMMENT '外部API連携設定テーブル';
+
+CREATE TABLE IF NOT EXISTS trendgauge_db.targets(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '月間予算ID',
+    store_id BIGINT NOT NULL COMMENT '店舗ID',
+    target_month VARCHAR(7) NOT NULL COMMENT '対象年月',
+    target_amount BIGINT NOT NULL DEFAULT 0 COMMENT '月間予算',
+    target_ratio DECIMAL(5,2) DEFAULT 100 COMMENT '昨年度対比目標',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登録日時',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+    FOREIGN KEY (store_id) REFERENCES stores(id),
+    UNIQUE KEY (store_id, target_month)
+)COMMENT '月間予算テーブル';
+
+CREATE TABLE IF NOT EXISTS trendgauge_db.sales(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '売上ID',
+    store_id BIGINT NOT NULL COMMENT '店舗ID',
+    sale_date DATE NOT NULL COMMENT '売上対象日',
+    amount BIGINT COMMENT '売上金額',
+    customer_count INT COMMENT '客数',
+    weather VARCHAR(20) COMMENT '天候',
+    target_amount BIGINT DEFAULT 0 COMMENT '日割り予算',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登録日時',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+    FOREIGN KEY (store_id) REFERENCES stores(id),
+    UNIQUE KEY (store_id, sale_date)
+)COMMENT '日次売上データテーブル';
+
+CREATE TABLE IF NOT EXISTS trendgauge_db.reports(
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'レポートID',
+    sale_id BIGINT NOT NULL COMMENT '売上ID',
+    summary TEXT COMMENT '日次所感・メモ',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登録日時',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+    FOREIGN KEY (sale_id) REFERENCES sales(id)
+)COMMENT '日次所感テーブル';
+
+CREATE TABLE IF NOT EXISTS trendgauge_db.memos(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'メモID',
+    sale_id BIGINT NOT NULL COMMENT '売上ID',
+    comment TEXT NOT NULL COMMENT 'メモ内容',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登録日時',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+    FOREIGN KEY (sale_id) REFERENCES sales(id)
+)COMMENT '日中メモテーブル';
+
+CREATE TABLE IF NOT EXISTS trendgauge_db.items(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'アイテムID',
+    sale_id BIGINT NOT NULL COMMENT '売上ID',
+    category_name VARCHAR(50) NOT NULL COMMENT '部門・カテゴリ名',
+    color_name VARCHAR(50) COMMENT 'カラー名',
+    quantity INT NOT NULL DEFAULT 0 COMMENT '販売点数',
+    subtotal BIGINT NOT NULL DEFAULT 0 COMMENT '小計金額',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登録日時',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+    FOREIGN KEY (sale_id) REFERENCES sales(id)
+)COMMENT '部門・カラー別売上テーブル';
