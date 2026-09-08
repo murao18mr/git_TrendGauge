@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ja"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Header</title>
+</head>
+<body>
+<header th:fragment="login-header" class="header">
+    <a th:href="@{/login}">
+        <img th:src="@{/images/logo.png}" alt="TrendGauge">
+    </a>
+</header>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+#app {
+    background-color: #FDE5C5;
+}
+
+.header{
+    background-color: #423A57;
+}
+
+.card, .form-label{
+    color: #423A57;
+    background-color: #FFF9F1;
+}
+
+.card-header{
+    background-color: #423A57;
+    color: #FDE5C5;
+}
+
+.btn-primary{
+    background-color: #77C2B9;
+    border-color: #77C2B9;
+}
+
+.btn-primary:hover{
+    background-color: #5FA9A0;
+    border-color: #5FA9A0;
+
+}

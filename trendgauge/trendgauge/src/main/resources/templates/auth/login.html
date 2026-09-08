@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ログイン - TrendGauge</title>
+</head>
+<body>
+<div th:replace="~{layout/index :: layout(~{::title}, ~{::#content})}">
+    <main id="content">
+        <header th:replace="~{fragments/login-header :: login-header}"></header>
+        <div class="col-md-5 mx-auto py-4">
+
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center">店舗ログイン</h4>
+                </div>
+                <div class="card-body py-5">
+
+                    <form th:action="@{/login}" method="post">
+                        <div class="col-md-8 mx-auto">
+                            <label for="storeCode" class="text-center d-block fs-5 fw-semibold">店舗コード</label>
+                            <input
+                                    type="text"
+                                    class="form-control mb-4 form-control-lg"
+                                    name="storeCode"
+                                    id="storeCode"
+                            />
+                        </div>
+                        <div class="col-md-8 mx-auto">
+                            <label for="password" class="text-center d-block fs-5 fw-semibold">パスワード</label>
+                            <input
+                                    type="password"
+                                    class="form-control mb-4 form-control-lg"
+                                    name="password"
+                                    id="password"
+                            >
+                        </div>
+                        <div class="row justify-content-center">
+                            <button type="submit" class="btn btn-primary w-25 mt-3">
+                                ログイン
+                            </button>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>
