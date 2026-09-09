@@ -6,6 +6,19 @@
     background-color: #423A57;
 }
 
+.navbar-brand img{
+    height: 80px;
+}
+
+.nav-link{
+    color: #FDE5C5;
+    font-size: 20px;
+}
+
+.nav-link:hover{
+    color: #EBC59B;
+}
+
 .card, .form-label{
     color: #423A57;
     background-color: #FFF9F1;
@@ -25,4 +38,9 @@
     background-color: #5FA9A0;
     border-color: #5FA9A0;
 
+}
+
+.error-message{
+    color: red;
+    margin: 0;
 }

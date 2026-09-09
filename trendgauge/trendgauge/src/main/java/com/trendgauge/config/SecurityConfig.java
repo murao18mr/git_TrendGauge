@@ -11,15 +11,21 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .formLogin(login -> login
-                        .loginPage("/login"));
+                .authorizeHttpRequests(authReq -> authReq
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/error").permitAll()
+                        .requestMatchers("/admin/login", "/login").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+//                        .requestMatchers("/manager/**").hasRole("STORE_MANAGER")
+                        .requestMatchers("/main", "/sales/new", "/sales/import").hasRole("STORE_TERMINAL")
+                        .anyRequest().authenticated()
+                );
         return http.build();
     }
 }

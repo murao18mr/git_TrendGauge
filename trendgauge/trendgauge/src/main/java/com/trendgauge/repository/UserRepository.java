@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 Optional<UserEntity> findByStoreIdAndRole(Long storeId, String role);
 
+Optional<UserEntity> findByEmailAndRole(String email, String role);
+
 }

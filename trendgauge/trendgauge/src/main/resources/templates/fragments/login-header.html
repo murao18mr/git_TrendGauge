@@ -5,10 +5,13 @@
     <title>Header</title>
 </head>
 <body>
-<header th:fragment="login-header" class="header">
-    <a th:href="@{/login}">
+<header th:fragment="login-header" class="header navbar py-0">
+    <div class="container-fluid">
+    <a th:href="@{/login}" class="navbar-brand">
         <img th:src="@{/images/logo.png}" alt="TrendGauge">
     </a>
+
+    </div>
 </header>
 
 </body>

@@ -1,4 +1,4 @@
-package com.trendgauge.Service;
+package com.trendgauge.service;
 
 import com.trendgauge.model.entity.StoreEntity;
 import com.trendgauge.model.entity.UserEntity;
