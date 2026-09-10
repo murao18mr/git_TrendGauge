@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>エラー - TrendGauge</title>
+</head>
+<body>
+<div th:replace="~{layout/index :: layout(~{::title}, ~{::#content})}">
+    <main id="content">
+        <header th:replace="~{fragments/login-header :: login-header}"></header>
+        <div class="container text-center py-5">
+            <h2>400 - Bad Request</h2>
+            <p>リクエストされた内容をサーバーが理解できませんでした。</p>
+        </div>
+    </main>
+
+</div>
+
+</body>
+</html>

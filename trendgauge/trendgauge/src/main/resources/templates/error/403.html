@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>エラー - TrendGauge</title>
+</head>
+<body>
+<div th:replace="~{layout/index :: layout(~{::title}, ~{::#content})}">
+    <main id="content">
+        <header th:replace="~{fragments/login-header :: login-header}"></header>
+            <div class="container text-center py-5">
+                <h2>403 - Forbidden</h2>
+                <p>権限がありません。</p>
+                <a th:href="@{/login}">トップに戻る</a>
+            </div>
+    </main>
+
+</div>
+
+</body>
+</html>
