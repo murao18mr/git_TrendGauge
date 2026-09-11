@@ -55,7 +55,6 @@ colorButton.addEventListener("click", function () {
     colorArea.style.display = "block";
 });
 
-
 const chartLabels = weeklySales.map(sale => sale.date);
 const chartData = weeklySales.map(sale => sale.amount);
 
@@ -121,3 +120,26 @@ const colorSalesChart = new Chart(
         }
     }
 );
+
+if (view === "sales") {
+    ratioArea.style.display = "none";
+    budgetArea.style.display = "none";
+    salesArea.style.display = "block";
+    categoryArea.style.display = "none";
+    colorArea.style.display = "none";
+}
+if (view === "category") {
+    ratioArea.style.display = "none";
+    budgetArea.style.display = "none";
+    salesArea.style.display = "none";
+    categoryArea.style.display = "block";
+    colorArea.style.display = "none";
+}
+
+if (view === "color") {
+    ratioArea.style.display = "none";
+    budgetArea.style.display = "none";
+    salesArea.style.display = "none";
+    categoryArea.style.display = "none";
+    colorArea.style.display = "block";
+}

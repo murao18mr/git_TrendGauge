@@ -158,9 +158,8 @@ public class StoreDashboardService {
         return ranking;
     }
 
-    public List<SalesTrendResponse> getWeeklySales(Long storeId){
-        LocalDate today = LocalDate.now();
-        LocalDate startDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+    public List<SalesTrendResponse> getWeeklySales(Long storeId, LocalDate baseDate){
+        LocalDate startDate = baseDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate endDate = startDate.plusDays(6);
 
         List<SaleEntity> sales = saleRepository.findByStoreIdAndSaleDateBetween(storeId, startDate, endDate);
@@ -182,9 +181,8 @@ public class StoreDashboardService {
         return weeklySales;
     }
 
-    public List<CategorySalesResponse> getCategorySales(Long storeId){
-        LocalDate today = LocalDate.now();
-        LocalDate startDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+    public List<CategorySalesResponse> getCategorySales(Long storeId, LocalDate baseDate){
+        LocalDate startDate = baseDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate endDate = startDate.plusDays(6);
 
         List<ItemEntity> items = itemRepository.findByStoreIdAndSaleDateBetween(storeId, startDate, endDate);
@@ -207,9 +205,8 @@ public class StoreDashboardService {
         return categorySales;
     }
 
-    public List<ColorSalesResponse> getColorSales(Long storeId){
-        LocalDate today = LocalDate.now();
-        LocalDate startDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+    public List<ColorSalesResponse> getColorSales(Long storeId, LocalDate baseDate){
+        LocalDate startDate = baseDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate endDate = startDate.plusDays(6);
 
         List<ItemEntity> items = itemRepository.findByStoreIdAndSaleDateBetween(storeId, startDate, endDate);
