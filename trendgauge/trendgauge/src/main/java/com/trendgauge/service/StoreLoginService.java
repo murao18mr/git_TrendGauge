@@ -22,7 +22,7 @@ public class StoreLoginService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public boolean login(String storeCode, String password) {
+    public boolean login(String storeCode, String password){
         Optional<StoreEntity> store = storeRepository.findByStoreCode(storeCode);
 
         if (store.isEmpty()) {

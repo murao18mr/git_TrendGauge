@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>ダッシュボード - TrendGauge</title>
+
 </head>
 <body>
 <div th:replace="~{layout/index :: layout(~{::title}, ~{::#content})}">
@@ -10,69 +11,104 @@
         <header th:replace="~{fragments/store-header :: store-header}"></header>
         <div class="col-md-5 mx-auto py-4">
             <div>
-                <button type="button" class="btn btn-primary w-25 mt-3 btn-lg">昨対比</button>
-                <button type="button" class="btn btn-primary w-25 mt-3 btn-lg">予算達成率</button>
+                <h3>ランキングを見る</h3>
+                <button type="button" id="ratio" class="btn btn-primary w-25 mt-3 btn-lg">昨対比</button>
+                <button type="button" id="budget" class="btn btn-primary w-25 mt-3 btn-lg">予算達成率</button>
+            </div>
+            <div>
+                <h3>グラフを見る</h3>
+                <button type="button" id="sales" class="btn btn-primary w-25 mt-3 btn-lg">売上推移</button>
+                <button type="button" id="category" class="btn btn-primary w-25 mt-3 btn-lg">部門別</button>
+                <button type="button" id="color" class="btn btn-primary w-25 mt-3 btn-lg">カラー別</button>
             </div>
 
-            <div id="ranking-area mt-4">
+            <!--メイン表示エリア-->
+            <div id="ratio-ranking-area" class="mt-4">
                 <h3 class="mb-3">店舗別昨対比ランキング</h3>
-
                 <div class="list-group">
-
-                    <div th:each="store, storeStat : ${ranking}"
+                    <div th:each="store, storeStat : ${ratioRanking}"
                          class="list-group-item d-flex justify-content-between align-items-center">
-
                         <div>
-                <span class="fw-bold me-2"
-                      th:text="${storeStat.index + 1}"></span>
-
+                            <span class="fw-bold me-2"
+                                  th:text="${storeStat.index + 1}"></span>
                             <span th:text="${store.storeName}"></span>
                         </div>
-
                         <span th:if="${store.ratio != null}"
                               th:text="${store.ratio + '%'}"></span>
-
-                        <span th:if="${store.ratio == null}">
-                -
-            </span>
-
+                        <span th:if="${store.ratio == null}">-</span>
                     </div>
                 </div>
 
             </div>
             <div id="budget-ranking-area" class="mt-4">
-
                 <h3 class="mb-3">店舗別予算達成率ランキング</h3>
-
                 <div class="list-group">
-
                     <div th:each="store, storeStat : ${budgetRanking}"
                          class="list-group-item d-flex justify-content-between align-items-center">
-
                         <div>
-                <span class="fw-bold me-2"
-                      th:text="${storeStat.index + 1}"></span>
-
+                            <span class="fw-bold me-2"
+                                  th:text="${storeStat.index + 1}"></span>
                             <span th:text="${store.storeName}"></span>
                         </div>
-
                         <span th:if="${store.ratio != null}"
                               th:text="${store.ratio + '%'}"></span>
-
-                        <span th:if="${store.ratio == null}">
-                -
-            </span>
+                        <span th:if="${store.ratio == null}">-</span>
 
                     </div>
 
                 </div>
 
             </div>
+
+            <div id="sales-area">
+                <h3>売上推移グラフ</h3>
+                <canvas id="salesTrendChart"></canvas>
+                <script th:inline="javascript">
+                    const weeklySales = /*[[${weeklySales}]]*/ [];
+                </script>
+            </div>
+
+
+            <div id="category-area">
+                <h3>部門別売上グラフ</h3>
+                <canvas id="categorySalesChart"></canvas>
+                <script th:inline="javascript">
+                    const categorySales = [[${categorySales}]];
+                </script>
+            </div>
+
+            <div id="color-area">
+                <h3>カラー別売上グラフ</h3>
+                <canvas id="colorSalesChart"></canvas>
+                <script th:inline="javascript">
+                    const colorSales = [[${colorSales}]];
+                </script>
+            </div>
+        </div>
+
+        <!-- 予算・メモ表示エリア-->
+        <div>
+            <div id="daily-target">
+                <h3>本日の日割り予算</h3>
+                <span th:if="${dailyTarget != null}"
+                      th:text="${dailyTarget + '円'}"></span>
+                <span th:if="${dailyTarget == null}">-</span>
+            </div>
+            <div id="memo-area">
+                <h3>本日のメモ一覧</h3>
+                <div th:each="memo : ${todayMemos}">
+                    <span th:text="${memo.createdAt}"></span>
+                    <span th:text="${memo.comment}"></span>
+                </div>
+
+            </div>
+
         </div>
 
     </main>
 
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/js/store-dashboard.js"></script>
 </body>
 </html>

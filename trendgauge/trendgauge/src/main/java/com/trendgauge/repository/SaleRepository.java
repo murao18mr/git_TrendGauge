@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
 
 public interface SaleRepository extends JpaRepository<SaleEntity, Long> {
     @Query("SELECT SUM(s.amount) FROM SaleEntity s " +
@@ -16,4 +19,8 @@ public interface SaleRepository extends JpaRepository<SaleEntity, Long> {
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    Optional<SaleEntity> findByStoreIdAndSaleDate(Long storeId, LocalDate saleDate);
+
+    List<SaleEntity> findByStoreIdAndSaleDateBetween(Long storeId, LocalDate startDate, LocalDate endDate);
 }
