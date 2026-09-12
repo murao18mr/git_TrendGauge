@@ -33,118 +33,74 @@
                 <div id="display-area" class="col-md-8">
                     <script th:inline="javascript">
                         const view = [[${view}]];
+                        const baseDate = [[${baseDate}]];
                     </script>
                     <div id="ratio-ranking-area" class="mt-4">
                         <h3 class="mb-3">店舗別昨対比ランキング</h3>
-                        <div class="list-group">
-                            <div th:each="store, storeStat : ${ratioRanking}"
-                                 class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                            <span class="fw-bold me-2"
-                                  th:text="${storeStat.index + 1}"></span>
-                                    <span th:text="${store.storeName}"></span>
-                                </div>
-                                <span th:if="${store.ratio != null}"
-                                      th:text="${store.ratio + '%'}"></span>
-                                <span th:if="${store.ratio == null}">-</span>
-                            </div>
-                        </div>
-
+                        <div id="ratio-ranking-list" class="list-group"></div>
                     </div>
+
                     <div id="budget-ranking-area" class="mt-4">
                         <h3 class="mb-3">店舗別予算達成率ランキング</h3>
-                        <div class="list-group">
-                            <div th:each="store, storeStat : ${budgetRanking}"
-                                 class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                            <span class="fw-bold me-2"
-                                  th:text="${storeStat.index + 1}"></span>
-                                    <span th:text="${store.storeName}"></span>
-                                </div>
-                                <span th:if="${store.ratio != null}"
-                                      th:text="${store.ratio + '%'}"></span>
-                                <span th:if="${store.ratio == null}">-</span>
-
-                            </div>
-
-                        </div>
-
+                        <div id="budget-ranking-list" class="list-group"></div>
                     </div>
 
                     <div id="sales-area">
                         <h3>売上推移グラフ</h3>
                         <div class="d-flex justify-content-between align-items-center">
-                            <a th:href="@{/main(date=${previousWeekDate}, view='sales')}" class="btn btn-primary">
+                            <button type="button" class="previous-week btn btn-primary">
                                 ← 前の週
-                            </a>
+                            </button>
                             <span>
-                            <span th:text="${currentWeekStart}"></span>
+                                <span class="week-start" th:text="${currentWeekStart}"></span>
                                 ～
-                            <span th:text="${currentWeekEnd}"></span>
-                        </span>
-                            <a th:if="${canGoNextWeek}"
-                               th:href="@{/main(date=${nextWeekDate}, view='sales')}" class="btn btn-primary">
+                                <span class="week-end" th:text="${currentWeekEnd}"></span>
+                            </span>
+                            <button type="button"
+                                    th:disabled="${!canGoNextWeek}" class="next-week btn btn-primary">
                                 次の週 →
-                            </a>
-                            <span th:unless="${canGoNextWeek}" class="btn btn-outline-secondary disabled">
-                            次の週 →
-                        </span>
+                            </button>
                         </div>
                         <canvas id="salesTrendChart"></canvas>
-                        <script th:inline="javascript">
-                            const weeklySales = [[${weeklySales}]];
-                        </script>
                     </div>
 
 
                     <div id="category-area">
                         <h3>部門別売上グラフ</h3>
                         <div class="d-flex justify-content-between align-items-center">
-                            <a th:href="@{/main(date=${previousWeekDate}, view='category')}" class="btn btn-primary">
+                            <button type="button" class="previous-week btn btn-primary">
                                 ← 前の週
-                            </a>
+                            </button>
                             <span>
-                            <span th:text="${currentWeekStart}"></span>
+                                <span class="week-start" th:text="${currentWeekStart}"></span>
                                 ～
-                            <span th:text="${currentWeekEnd}"></span>
-                        </span>
-                            <a th:if="${canGoNextWeek}"
-                               th:href="@{/main(date=${nextWeekDate}, view='category')}" class="btn btn-primary">
+                                <span class="week-end" th:text="${currentWeekEnd}"></span>
+                            </span>
+                            <button type="button"
+                                    th:disabled="${!canGoNextWeek}" class="next-week btn btn-primary">
                                 次の週 →
-                            </a>
-                            <span th:unless="${canGoNextWeek}" class="btn btn-outline-secondary disabled">
-                            次の週 →
-                        </span>
+                            </button>
                         </div>
                         <canvas id="categorySalesChart"></canvas>
-                        <script th:inline="javascript">
-                            const categorySales = [[${categorySales}]];
-                        </script>
                     </div>
 
                     <div id="color-area">
                         <h3>カラー別売上グラフ</h3>
                         <div class="d-flex justify-content-between align-items-center">
-                            <a th:href="@{/main(date=${previousWeekDate}, view='color')}" class="btn btn-primary">
+                            <button type="button" class="previous-week btn btn-primary">
                                 ← 前の週
-                            </a>
+                            </button>
                             <span>
-                            <span th:text="${currentWeekStart}"></span>
+                                <span class="week-start" th:text="${currentWeekStart}"></span>
                                 ～
-                            <span th:text="${currentWeekEnd}"></span>
-                        </span>
-                            <a th:if="${canGoNextWeek}"
-                               th:href="@{/main(date=${nextWeekDate}, view='color')}" class="btn btn-primary">
+                                <span class="week-end" th:text="${currentWeekEnd}"></span>
+                            </span>
+                            <button type="button"
+                                    th:disabled="${!canGoNextWeek}" class="next-week btn btn-primary">
                                 次の週 →
-                            </a>
-                            <span th:unless="${canGoNextWeek}" class="btn btn-outline-secondary disabled">
-                            次の週 →
-                        </span>
+                            </button>
                         </div>
                         <canvas id="colorSalesChart"></canvas>
-                        <script th:inline="javascript">
-                            const colorSales = [[${colorSales}]];
-                        </script>
                     </div>
                 </div>
 

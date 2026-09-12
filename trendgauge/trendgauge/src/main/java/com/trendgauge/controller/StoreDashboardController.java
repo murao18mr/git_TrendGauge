@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -44,20 +45,9 @@ public class StoreDashboardController {
         LocalDate nextWeekDate = currentWeekEnd.plusDays(1);
         boolean canGoNextWeek = !nextWeekDate.isAfter(LocalDate.now());
 
-        List<StoreRankingResponse> ratioRanking = storeDashboardService.getRatioRanking();
-        List<StoreRankingResponse> budgetRanking = storeDashboardService.getBudgetRanking();
-        List<SalesTrendResponse> weeklySales = storeDashboardService.getWeeklySales(storeId, baseDate);
-        List<CategorySalesResponse> categorySales = storeDashboardService.getCategorySales(storeId, baseDate);
-        List<ColorSalesResponse> colorSales = storeDashboardService.getColorSales(storeId, baseDate);
-
         Long dailyTarget = storeDashboardService.dailyTarget(storeId);
         List<MemoEntity> todayMemos = memoService.getTodayMemos(storeId, LocalDate.now());
 
-
-        model.addAttribute("ratioRanking", ratioRanking);
-        model.addAttribute("budgetRanking", budgetRanking);
-
-        model.addAttribute("weeklySales", weeklySales);
         model.addAttribute("baseDate", baseDate);
         model.addAttribute("currentWeekStart", currentWeekStart);
         model.addAttribute("currentWeekEnd", currentWeekEnd);
@@ -66,14 +56,61 @@ public class StoreDashboardController {
         model.addAttribute("canGoNextWeek", canGoNextWeek);
         model.addAttribute("view", view);
 
-        model.addAttribute("categorySales", categorySales);
-        model.addAttribute("colorSales", colorSales);
-
         model.addAttribute("dailyTarget", dailyTarget);
         model.addAttribute("todayMemos", todayMemos);
 
         return "dashboard/store";
     }
 
+    @GetMapping("/main/sales")
+    @ResponseBody
+    public List<SalesTrendResponse> getSalesTrend(
+            Authentication authentication,
+            @RequestParam(required = false) LocalDate date
+    ){
+        String storeCode = authentication.getName();
+        Long storeId = storeDashboardService.getStoreId(storeCode);
+        LocalDate baseDate = date != null ? date : LocalDate.now();
+
+        return storeDashboardService.getWeeklySales(storeId, baseDate);
+    }
+
+    @GetMapping("/main/category")
+    @ResponseBody
+    public List<CategorySalesResponse> getCategorySales(
+            Authentication authentication,
+            @RequestParam(required = false) LocalDate date
+    ){
+        String storeCode = authentication.getName();
+        Long storeId = storeDashboardService.getStoreId(storeCode);
+        LocalDate baseDate = date != null ? date : LocalDate.now();
+
+        return storeDashboardService.getCategorySales(storeId, baseDate);
+    }
+
+    @GetMapping("/main/color")
+    @ResponseBody
+    public List<ColorSalesResponse> getColorSales(
+            Authentication authentication,
+            @RequestParam(required = false) LocalDate date) {
+
+        String storeCode = authentication.getName();
+        Long storeId = storeDashboardService.getStoreId(storeCode);
+        LocalDate baseDate = date != null ? date : LocalDate.now();
+
+        return storeDashboardService.getColorSales(storeId, baseDate);
+    }
+
+    @GetMapping("/main/ratio")
+    @ResponseBody
+    public List<StoreRankingResponse> getRatioRanking() {
+        return storeDashboardService.getRatioRanking();
+    }
+
+    @GetMapping("/main/budget")
+    @ResponseBody
+    public List<StoreRankingResponse> getBudgetRanking() {
+        return storeDashboardService.getBudgetRanking();
+    }
 
 }
