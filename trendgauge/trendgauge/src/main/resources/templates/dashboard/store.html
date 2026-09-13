@@ -9,22 +9,28 @@
 <div th:replace="~{layout/index :: layout(~{::title}, ~{::#content})}">
     <main id="content">
         <header th:replace="~{fragments/store-header :: store-header}"></header>
-        <div class="container py-4">
+        <div class="container py-5">
             <div class="row">
                 <div id="button-area" class="col-md-2">
-                    <div class="mb-4">
-                        <h4>ランキングを見る</h4>
+                    <div class="mb-5">
+                        <h4 class="text-center mt-3">ランキングを見る</h4>
                         <div class="d-grid gap-2">
-                            <button type="button" id="ratio" class="btn btn-primary mt-3 btn-lg">昨対比</button>
-                            <button type="button" id="budget" class="btn btn-primary mt-3 btn-lg">予算達成率</button>
+                            <button type="button" id="ratio" class="btn btn-primary mt-3 btn-lg tab-button">昨対比
+                            </button>
+                            <button type="button" id="budget" class="btn btn-primary mt-3 btn-lg tab-button">
+                                予算達成率
+                            </button>
                         </div>
                     </div>
                     <div>
-                        <h4>グラフを見る</h4>
+                        <h4 class="text-center">グラフを見る</h4>
                         <div class="d-grid gap-2">
-                            <button type="button" id="sales" class="btn btn-primary mt-3 btn-lg">売上推移</button>
-                            <button type="button" id="category" class="btn btn-primary mt-3 btn-lg">部門別</button>
-                            <button type="button" id="color" class="btn btn-primary mt-3 btn-lg">カラー別</button>
+                            <button type="button" id="sales" class="btn btn-primary mt-3 btn-lg tab-button">売上推移
+                            </button>
+                            <button type="button" id="category" class="btn btn-primary mt-3 btn-lg tab-button">部門別
+                            </button>
+                            <button type="button" id="color" class="btn btn-primary mt-3 btn-lg tab-button">カラー別
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -35,88 +41,125 @@
                         const view = [[${view}]];
                         const baseDate = [[${baseDate}]];
                     </script>
-                    <div id="ratio-ranking-area" class="mt-4">
-                        <h3 class="mb-3">店舗別昨対比ランキング</h3>
-                        <div id="ratio-ranking-list" class="list-group"></div>
+
+                    <div id="ratio-ranking-area" class="card display-card">
+                        <div class="card-header text-center">
+                            <h3>店舗別 昨対比ランキング（月間）</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="ranking-chart-scroll">
+                                <div class="ranking-chart-container">
+                                    <canvas id="ratioRankingChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div id="budget-ranking-area" class="mt-4">
-                        <h3 class="mb-3">店舗別予算達成率ランキング</h3>
-                        <div id="budget-ranking-list" class="list-group"></div>
+                    <div id="budget-ranking-area" class="card display-card">
+                        <div class="card-header text-center">
+                            <h3>店舗別 予算達成率ランキング（月間）</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="ranking-chart-scroll">
+                                <div class="ranking-chart-container">
+                                    <canvas id="budgetRankingChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div id="sales-area">
-                        <h3>売上推移グラフ</h3>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button type="button" class="previous-week btn btn-primary">
-                                ← 前の週
-                            </button>
-                            <span>
+                    <div id="sales-area" class="card display-card">
+                        <div class="card-header text-center">
+                            <h3>売上推移グラフ</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <button type="button" class="previous-week btn btn-primary">
+                                    ← 前の週
+                                </button>
+                                <span>
                                 <span class="week-start" th:text="${currentWeekStart}"></span>
                                 ～
                                 <span class="week-end" th:text="${currentWeekEnd}"></span>
                             </span>
-                            <button type="button"
-                                    th:disabled="${!canGoNextWeek}" class="next-week btn btn-primary">
-                                次の週 →
-                            </button>
+                                <button type="button"
+                                        th:disabled="${!canGoNextWeek}" class="next-week btn btn-primary">
+                                    次の週 →
+                                </button>
+                            </div>
+                            <canvas id="salesTrendChart"></canvas>
                         </div>
-                        <canvas id="salesTrendChart"></canvas>
                     </div>
 
 
-                    <div id="category-area">
-                        <h3>部門別売上グラフ</h3>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button type="button" class="previous-week btn btn-primary">
-                                ← 前の週
-                            </button>
-                            <span>
+                    <div id="category-area" class="card display-card">
+                        <div class="card-header text-center">
+                            <h3>部門別売上グラフ</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <button type="button" class="previous-week btn btn-primary">
+                                    ← 前の週
+                                </button>
+                                <span>
                                 <span class="week-start" th:text="${currentWeekStart}"></span>
                                 ～
                                 <span class="week-end" th:text="${currentWeekEnd}"></span>
                             </span>
-                            <button type="button"
-                                    th:disabled="${!canGoNextWeek}" class="next-week btn btn-primary">
-                                次の週 →
-                            </button>
+                                <button type="button"
+                                        th:disabled="${!canGoNextWeek}" class="next-week btn btn-primary">
+                                    次の週 →
+                                </button>
+                            </div>
+                            <canvas id="categorySalesChart"></canvas>
                         </div>
-                        <canvas id="categorySalesChart"></canvas>
                     </div>
 
-                    <div id="color-area">
-                        <h3>カラー別売上グラフ</h3>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button type="button" class="previous-week btn btn-primary">
-                                ← 前の週
-                            </button>
-                            <span>
+                    <div id="color-area" class="card display-card">
+                        <div class="card-header text-center">
+                            <h3>カラー別売上グラフ</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <button type="button" class="previous-week btn btn-primary">
+                                    ← 前の週
+                                </button>
+                                <span>
                                 <span class="week-start" th:text="${currentWeekStart}"></span>
                                 ～
                                 <span class="week-end" th:text="${currentWeekEnd}"></span>
                             </span>
-                            <button type="button"
-                                    th:disabled="${!canGoNextWeek}" class="next-week btn btn-primary">
-                                次の週 →
-                            </button>
+                                <button type="button"
+                                        th:disabled="${!canGoNextWeek}" class="next-week btn btn-primary">
+                                    次の週 →
+                                </button>
+                            </div>
+                            <canvas id="colorSalesChart"></canvas>
                         </div>
-                        <canvas id="colorSalesChart"></canvas>
                     </div>
                 </div>
 
                 <!-- 予算・メモ表示エリア-->
-                <div id="sub-display-area" class="col-md-2">
-                    <div id="daily-target" class="mb-4">
-                        <h4>本日の日割り予算</h4>
-                        <span th:if="${dailyTarget != null}"
-                              th:text="${dailyTarget + '円'}"></span>
-                        <span th:if="${dailyTarget == null}">-</span>
-                    </div>
-                    <div id="memo-area">
-                        <h4>本日のメモ一覧</h4>
-                        <div th:each="memo : ${todayMemos}">
-                            <span th:text="${memo.createdAt}"></span>
-                            <span th:text="${memo.comment}"></span>
+                <div class="col-md-2">
+                    <div id="sub-display-area" class="card p-3 h-100">
+                        <div id="daily-target" class="mb-4">
+                            <h5 class="text-center">本日の日割り予算</h5>
+                            <span th:if="${dailyTarget != null}"
+                                  th:text="${#numbers.formatInteger(dailyTarget, 1, 'COMMA') + '円'}"
+                                  class="fs-3 d-block text-center"></span>
+                            <span th:if="${dailyTarget == null}"
+                                  class="fs-3 d-block text-center">-</span>
+                        </div>
+                        <div id="memo-area" class="mt-3">
+                            <h5 class="text-center">本日のメモ一覧</h5>
+                            <div class="memo-list">
+                                <div th:each="memo : ${todayMemos}" class="card mb-2">
+                                    <div class="card-body py-2">
+                                        <span th:text="${#temporals.format(memo.createdAt, 'yyyy/MM/dd HH:mm')}"></span>
+                                        <span th:text="${memo.comment}"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -127,6 +170,8 @@
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script src="/js/store-dashboard.js"></script>
 </body>
 </html>

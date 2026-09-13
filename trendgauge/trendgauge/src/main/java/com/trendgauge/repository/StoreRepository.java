@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface StoreRepository extends JpaRepository<StoreEntity, Long> {
     Optional<StoreEntity> findByStoreCode(String storeCode);
+
+    List<StoreEntity> findByCompanyId(Long companyId);
 }

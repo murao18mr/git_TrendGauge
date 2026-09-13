@@ -92,8 +92,8 @@ public class StoreDashboardController {
     @ResponseBody
     public List<ColorSalesResponse> getColorSales(
             Authentication authentication,
-            @RequestParam(required = false) LocalDate date) {
-
+            @RequestParam(required = false) LocalDate date
+    ){
         String storeCode = authentication.getName();
         Long storeId = storeDashboardService.getStoreId(storeCode);
         LocalDate baseDate = date != null ? date : LocalDate.now();
@@ -103,14 +103,19 @@ public class StoreDashboardController {
 
     @GetMapping("/main/ratio")
     @ResponseBody
-    public List<StoreRankingResponse> getRatioRanking() {
-        return storeDashboardService.getRatioRanking();
+    public List<StoreRankingResponse> getRatioRanking(Authentication authentication){
+        String storeCode = authentication.getName();
+        Long companyId = storeDashboardService.getCompanyId(storeCode);
+        return storeDashboardService.getRatioRanking(companyId);
     }
 
     @GetMapping("/main/budget")
     @ResponseBody
-    public List<StoreRankingResponse> getBudgetRanking() {
-        return storeDashboardService.getBudgetRanking();
+    public List<StoreRankingResponse> getBudgetRanking(Authentication authentication){
+        String storeCode = authentication.getName();
+        Long companyId = storeDashboardService.getCompanyId(storeCode);
+
+        return storeDashboardService.getBudgetRanking(companyId);
     }
 
 }

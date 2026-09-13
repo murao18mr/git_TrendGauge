@@ -10,9 +10,6 @@ const salesArea = document.getElementById("sales-area");
 const categoryArea = document.getElementById("category-area");
 const colorArea = document.getElementById("color-area");
 
-const ratioRankingList = document.getElementById("ratio-ranking-list");
-const budgetRankingList = document.getElementById("budget-ranking-list");
-
 budgetArea.style.display = "none";
 salesArea.style.display = "none";
 categoryArea.style.display = "none";
@@ -28,27 +25,41 @@ function showArea(area) {
     area.style.display = "block";
 }
 
+const tabButtons = document.querySelectorAll(".tab-button");
+
+function activeTab(button) {
+    tabButtons.forEach(function (tab) {
+        tab.classList.remove("active");
+    });
+    button.classList.add("active");
+}
+
 ratioButton.addEventListener("click", function () {
+    activeTab(ratioButton);
     showArea(ratioArea);
-    loadRanking("/main/ratio", ratioRankingList);
+    loadRanking("/main/ratio", "ratioRankingChart", ratioRankingChart);
 });
 
 budgetButton.addEventListener("click", function () {
+    activeTab(budgetButton);
     showArea(budgetArea);
-    loadRanking("/main/budget", budgetRankingList);
+    loadRanking("/main/budget", "budgetRankingChart", budgetRankingChart);
 });
 
 salesButton.addEventListener("click", function () {
+    activeTab(salesButton);
     showArea(salesArea);
     loadSalesChart(currentDate);
 });
 
 categoryButton.addEventListener("click", function () {
+    activeTab(categoryButton);
     showArea(categoryArea);
     loadCategoryChart(currentDate);
 });
 
 colorButton.addEventListener("click", function () {
+    activeTab(colorButton);
     showArea(colorArea);
     loadColorChart(currentDate);
 });
@@ -65,37 +76,127 @@ if (view === "color") {
     showArea(colorArea);
 }
 
-function loadRanking(url, listArea) {
+
+let ratioRankingChart;
+let budgetRankingChart;
+
+function loadRanking(url, canvasId, chartInstance) {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            listArea.innerHTML = "";
+            const chartHeight = Math.max(data.length * 45, 430);
+            const emptyRows = Math.max(Math.ceil(chartHeight / 45) - data.length, 0);
 
-            data.forEach(function (store, index) {
-                const listItem = document.createElement("div");
-                listItem.className = "list-group-item d-flex justify-content-between align-items-center";
-
-                const storeInfo = document.createElement("div");
-
-                const rank = document.createElement("span");
-                rank.className = "fw-bold me-2";
-                rank.textContent = index + 1;
-
-                const storeName = document.createElement("span");
-                storeName.textContent = store.storeName;
-
-                storeInfo.appendChild(rank);
-                storeInfo.appendChild(storeName);
-
-                const ratio = document.createElement("span");
-                ratio.textContent =
-                    store.ratio !== null ? store.ratio + "%" : "-";
-
-                listItem.appendChild(storeInfo);
-                listItem.appendChild(ratio);
-
-                listArea.appendChild(listItem);
+            const labels = data.map(function (store, index) {
+                return (index + 1) + "位  " + store.storeName;
             });
+
+            const values = data.map(function (store) {
+                return store.ratio;
+            });
+
+            for (let i = 0; i < emptyRows; i++) {
+                labels.push("");
+                values.push(null);
+            }
+
+            const canvas = document.getElementById(canvasId);
+
+            const chartContainer = canvas.parentElement;
+            chartContainer.style.height = chartHeight + "px";
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+            const chart = new Chart(canvas, {
+                type: "bar",
+                plugins: [ChartDataLabels],
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            data: values,
+                            backgroundColor: data.map(function (store, index) {
+                                if (index === 0) {
+                                    return "#D4AF37";
+                                }
+
+                                if (index === 1) {
+                                    return "#B8B8B8";
+                                }
+
+                                if (index === 2) {
+                                    return "#C58B4A";
+                                }
+
+                                return "#D9D9D9";
+                            }),
+                            borderWidth: 0,
+                            barPercentage: 0.7,
+                            categoryPercentage: 0.8
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: "y",
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return context.raw + "%";
+                                }
+                            }
+                        },
+                        annotation: {
+                            annotations: {
+                                line100: {
+                                    type: "line",
+                                    xMin: 100,
+                                    xMax: 100,
+                                    borderWidth: 2
+                                }
+                            }
+                        },
+                        datalabels: {
+                            anchor: "end",
+                            align: "right",
+                            formatter: function (value) {
+                                if (value === null) {
+                                    return "-";
+                                }
+                                return value + "%";
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            suggestedMax: 130,
+                            ticks: {
+                                callback: function (value) {
+                                    return value + "%";
+                                }
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                font: {
+                                    weight: "bold",
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            return chart;
         });
 }
 
@@ -139,6 +240,18 @@ function updateWeekDisplay(dateString) {
     });
 }
 
+function updateNextWeekButton(nextWeek) {
+    const date = new Date(currentDate + "T00:00:00");
+    date.setDate(date.getDate() + 7);
+
+    const nextDate =
+        date.getFullYear() + "-" +
+        String(date.getMonth() + 1).padStart(2, "0") + "-" +
+        String(date.getDate()).padStart(2, "0");
+
+    nextWeek.disabled = nextDate > getTodayString();
+}
+
 function weekNavigation(area, loadChart) {
     const previousWeek = area.querySelector(".previous-week");
     const nextWeek = area.querySelector(".next-week");
@@ -152,7 +265,7 @@ function weekNavigation(area, loadChart) {
             String(date.getMonth() + 1).padStart(2, "0") + "-" +
             String(date.getDate()).padStart(2, "0");
 
-        nextWeek.disabled = false;
+        updateNextWeekButton(nextWeek);
         loadChart(currentDate);
     });
 
@@ -172,8 +285,9 @@ function weekNavigation(area, loadChart) {
             nextWeek.disabled = true;
             return;
         }
-        nextWeek.disabled = false;
+
         currentDate = nextDate;
+        updateNextWeekButton(nextWeek);
         loadChart(currentDate);
     });
 }
@@ -203,7 +317,13 @@ function loadSalesChart(date) {
                         ]
                     },
                     options: {
-                        responsive: true
+                        responsive: true,
+                        animation: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
                     }
                 }
             );
@@ -231,12 +351,29 @@ function loadCategoryChart(date) {
                         datasets: [
                             {
                                 label: "部門別売上",
-                                data: chartData
+                                data: chartData,
+                                maxBarThickness: 70
                             }
                         ]
                     },
                     options: {
-                        responsive: true
+                        responsive: true,
+                        animation: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            datalabels: {
+                                anchor: "end",
+                                align: "top",
+                                formatter: function (value) {
+                                    return value.toLocaleString() + "円";
+                                },
+                                font: {
+                                    weight: "bold"
+                                }
+                            }
+                        }
                     }
                 }
             );
@@ -257,6 +394,7 @@ function loadColorChart(date) {
 
             colorChart = new Chart(
                 document.getElementById("colorSalesChart"),
+
                 {
                     type: "bar",
                     data: {
@@ -264,25 +402,45 @@ function loadColorChart(date) {
                         datasets: [
                             {
                                 label: "カラー別売上",
-                                data: chartData
+                                data: chartData,
+                                maxBarThickness: 70
                             }
                         ]
                     },
                     options: {
-                        responsive: true
+                        responsive: true,
+                        animation: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            datalabels: {
+                                anchor: "end",
+                                align: "top",
+                                formatter: function (value) {
+                                    return value.toLocaleString() + "円";
+                                },
+                                font: {
+                                    weight: "bold"
+                                }
+                            }
+                        }
                     }
                 }
             );
         });
 }
 
-loadRanking("/main/ratio", ratioRankingList);
-
 function setupChart(area, loadChart) {
     loadChart(currentDate);
     weekNavigation(area, loadChart);
+    updateNextWeekButton(area.querySelector(".next-week"));
 }
+
+loadRanking("/main/ratio", "ratioRankingChart", ratioRankingChart);
+activeTab(ratioButton);
 
 setupChart(salesArea, loadSalesChart);
 setupChart(categoryArea, loadCategoryChart);
 setupChart(colorArea, loadColorChart);
+

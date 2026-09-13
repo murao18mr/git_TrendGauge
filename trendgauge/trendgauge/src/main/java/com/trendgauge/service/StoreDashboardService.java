@@ -47,6 +47,14 @@ public class StoreDashboardService {
         return store.get().getId();
     }
 
+    public Long getCompanyId(String storeCode){
+        Optional<StoreEntity> store = storeRepository.findByStoreCode(storeCode);
+        if (store.isEmpty()) {
+            return null;
+        }
+        return store.get().getCompanyId();
+    }
+
     public BigDecimal calculateRatio(Long storeId){
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.withDayOfMonth(1);
@@ -113,8 +121,8 @@ public class StoreDashboardService {
         return ratio;
     }
 
-    public List<StoreRankingResponse> getRatioRanking(){
-        List<StoreEntity> stores = storeRepository.findAll();
+    public List<StoreRankingResponse> getRatioRanking(Long companyId){
+        List<StoreEntity> stores = storeRepository.findByCompanyId(companyId);
         List<StoreRankingResponse> ranking = new ArrayList<>();
 
         for(StoreEntity store : stores){
@@ -136,8 +144,8 @@ public class StoreDashboardService {
         return ranking;
     }
 
-    public List<StoreRankingResponse> getBudgetRanking(){
-        List<StoreEntity> stores = storeRepository.findAll();
+    public List<StoreRankingResponse> getBudgetRanking(Long companyId){
+        List<StoreEntity> stores = storeRepository.findByCompanyId(companyId);
         List<StoreRankingResponse> ranking = new ArrayList<>();
         for (StoreEntity store : stores) {
             Long storeId = store.getId();
