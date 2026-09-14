@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -20,6 +21,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 @Controller
+@RequestMapping("/main")
 public class StoreDashboardController {
     private final StoreDashboardService storeDashboardService;
     private final MemoService memoService;
@@ -29,7 +31,7 @@ public class StoreDashboardController {
         this.memoService = memoService;
     }
 
-    @GetMapping("/main")
+    @GetMapping
     public String storeDashboardPage(
             Model model,
             Authentication authentication,
@@ -62,7 +64,7 @@ public class StoreDashboardController {
         return "dashboard/store";
     }
 
-    @GetMapping("/main/sales")
+    @GetMapping("/sales")
     @ResponseBody
     public List<SalesTrendResponse> getSalesTrend(
             Authentication authentication,
@@ -75,7 +77,7 @@ public class StoreDashboardController {
         return storeDashboardService.getWeeklySales(storeId, baseDate);
     }
 
-    @GetMapping("/main/category")
+    @GetMapping("/category")
     @ResponseBody
     public List<CategorySalesResponse> getCategorySales(
             Authentication authentication,
@@ -88,7 +90,7 @@ public class StoreDashboardController {
         return storeDashboardService.getCategorySales(storeId, baseDate);
     }
 
-    @GetMapping("/main/color")
+    @GetMapping("/color")
     @ResponseBody
     public List<ColorSalesResponse> getColorSales(
             Authentication authentication,
@@ -101,7 +103,7 @@ public class StoreDashboardController {
         return storeDashboardService.getColorSales(storeId, baseDate);
     }
 
-    @GetMapping("/main/ratio")
+    @GetMapping("/ratio")
     @ResponseBody
     public List<StoreRankingResponse> getRatioRanking(Authentication authentication){
         String storeCode = authentication.getName();
@@ -109,7 +111,7 @@ public class StoreDashboardController {
         return storeDashboardService.getRatioRanking(companyId);
     }
 
-    @GetMapping("/main/budget")
+    @GetMapping("/budget")
     @ResponseBody
     public List<StoreRankingResponse> getBudgetRanking(Authentication authentication){
         String storeCode = authentication.getName();

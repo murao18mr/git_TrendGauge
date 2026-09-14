@@ -1,0 +1,35 @@
+<div th:fragment="memo-modal" class="modal fade" id="memo-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">メモを残す</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>店頭で気付いたこと、連絡事項などを残せます。</p>
+                <div class="mb-3">
+                    <label for="memo-date" class="form-label">日付</label>
+                    <input type="date"
+                           id="memo-date"
+                           class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="memo-comment" class="form-label">メモ</label>
+                    <textarea id="memo-comment"
+                              class="form-control"
+                              rows="4"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center gap-5">
+                <button type="button" class="btn btn-secondary memo-button" data-bs-dismiss="modal">
+                    キャンセル
+                </button>
+                <button type="button" class="btn btn-primary memo-button" id="memo-register">
+                    登録
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

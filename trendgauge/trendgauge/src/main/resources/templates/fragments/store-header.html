@@ -13,7 +13,9 @@
 
         <ul class="navbar-nav flex-row ms-4 gap-5 me-3">
             <li class="nav-item">
-                <a class="nav-link fs-5" href="#">メモを残す</a>
+               <button type="button" id="memo-button" class="nav-link fs-5" data-bs-toggle="modal" data-bs-target="#memo-modal">
+                   メモを残す
+               </button>
             </li>
             <li class="nav-item">
                 <a th:href="@{/sales/new}" class="nav-link fs-5">日次報告作成</a>
@@ -22,7 +24,9 @@
                 <a th:href="@{/sales/import}" class="nav-link fs-5">CSVインポート</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link fs-5" href="#">店長ログイン</a>
+                <button type="button" id="manager-button" class="nav-link fs-5" data-bs-toggle="modal" data-bs-target="#manager-login-modal">
+                    店長ログイン
+                </button>
             </li>
         </ul>
     </div>

@@ -64,6 +64,7 @@ html, body{
 }
 
 .memo-list{
+    height: 300px;
     overflow-y: auto;
 }
 
@@ -91,10 +92,36 @@ html, body{
     padding-bottom: 0.5rem;
 }
 
-.graph-card canvas {
+.graph-card canvas{
     height: 400px !important;
 }
 
-.memo-list .card {
+.memo-list .card{
     overflow: hidden;
+}
+
+.modal-header{
+    background-color: #423A57;
+    color: #FDE5C5;
+}
+
+.modal-body{
+    background-color: #FFF9F1;
+    color: #423A57;
+}
+
+.modal-footer{
+    background-color: #FFF9F1;
+}
+
+.memo-button{
+    width: 150px;
+}
+
+.nav-link:focus {
+    color: #FDE5C5;
+}
+
+#memo-date {
+    cursor: pointer;
 }

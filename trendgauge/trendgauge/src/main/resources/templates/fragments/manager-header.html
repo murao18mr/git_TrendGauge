@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Header</title>
+</head>
+<body>
+<header th:fragment="manager-header" class="header navbar py-0">
+    <div class="container-fluid">
+        <a th:href="@{/manager/menu}" class="navbar-brand">
+            <img th:src="@{/images/logo.png}" alt="TrendGauge">
+        </a>
+
+        <ul class="navbar-nav flex-row ms-4 gap-5 me-3">
+            <li class="nav-item">
+                <p>店長モード</p>
+            </li>
+            <li class="nav-item">
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="nav-link">
+                        店長モードからログアウトして店舗ダッシュボードに戻る
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</header>
+
+</body>
+</html>

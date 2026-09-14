@@ -5,8 +5,10 @@ import com.trendgauge.model.entity.SaleEntity;
 import com.trendgauge.repository.MemoRepository;
 import com.trendgauge.repository.SaleRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,18 +28,23 @@ public class MemoService {
             SaleEntity newSale = new SaleEntity();
             newSale.setStoreId(storeId);
             newSale.setSaleDate(saleDate);
+            newSale.setCreatedAt(LocalDateTime.now());
+            newSale.setUpdatedAt(LocalDateTime.now());
             SaleEntity savedSale = saleRepository.save(newSale);
             return savedSale;
         }
         return existingSale.get();
     }
 
+    @Transactional
     public void registerMemo(Long storeId, LocalDate saleDate, String comment){
         SaleEntity sale = getOrCreateSale(storeId, saleDate);
 
         MemoEntity memo = new MemoEntity();
         memo.setSaleId(sale.getId());
         memo.setComment(comment);
+        memo.setCreatedAt(LocalDateTime.now());
+        memo.setUpdatedAt(LocalDateTime.now());
         memoRepository.save(memo);
     }
 

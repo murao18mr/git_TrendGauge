@@ -23,7 +23,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/login", "/login").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 //                        .requestMatchers("/manager/**").hasRole("STORE_MANAGER")
-                        .requestMatchers("/main", "/sales/new", "/sales/import").hasRole("STORE_TERMINAL")
+                        .requestMatchers("/main/**", "/sales/new", "/sales/import").hasRole("STORE_TERMINAL")
                         .anyRequest().authenticated()
                 );
         return http.build();
