@@ -16,29 +16,17 @@ import java.util.Optional;
 public class MemoService {
     private final MemoRepository memoRepository;
     private final SaleRepository saleRepository;
+    private final SaleService saleService;
 
-    public MemoService(MemoRepository memoRepository, SaleRepository saleRepository){
+    public MemoService(MemoRepository memoRepository, SaleRepository saleRepository, SaleService saleService){
         this.memoRepository = memoRepository;
         this.saleRepository = saleRepository;
-    }
-
-    public SaleEntity getOrCreateSale(Long storeId, LocalDate saleDate){
-        Optional<SaleEntity> existingSale = saleRepository.findByStoreIdAndSaleDate(storeId, saleDate);
-        if(existingSale.isEmpty()){
-            SaleEntity newSale = new SaleEntity();
-            newSale.setStoreId(storeId);
-            newSale.setSaleDate(saleDate);
-            newSale.setCreatedAt(LocalDateTime.now());
-            newSale.setUpdatedAt(LocalDateTime.now());
-            SaleEntity savedSale = saleRepository.save(newSale);
-            return savedSale;
-        }
-        return existingSale.get();
+        this.saleService = saleService;
     }
 
     @Transactional
     public void registerMemo(Long storeId, LocalDate saleDate, String comment){
-        SaleEntity sale = getOrCreateSale(storeId, saleDate);
+        SaleEntity sale = saleService.getOrCreateSale(storeId, saleDate);
 
         MemoEntity memo = new MemoEntity();
         memo.setSaleId(sale.getId());

@@ -10,22 +10,24 @@
                 <p>店頭で気付いたこと、連絡事項などを残せます。</p>
                 <div class="mb-3">
                     <label for="memo-date" class="form-label">日付</label>
+                    <p id="memo-date-error" class="error-message"></p>
                     <input type="date"
                            id="memo-date"
                            class="form-control">
                 </div>
                 <div class="mb-3">
                     <label for="memo-comment" class="form-label">メモ</label>
+                    <p id="memo-comment-error" class="error-message"></p>
                     <textarea id="memo-comment"
                               class="form-control"
                               rows="4"></textarea>
                 </div>
             </div>
             <div class="modal-footer justify-content-center gap-5">
-                <button type="button" class="btn btn-secondary memo-button" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary action-button" data-bs-dismiss="modal">
                     キャンセル
                 </button>
-                <button type="button" class="btn btn-primary memo-button" id="memo-register">
+                <button type="button" class="btn btn-primary action-button" id="memo-register">
                     登録
                 </button>
             </div>

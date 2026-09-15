@@ -7,6 +7,7 @@ html, body{
     margin: 0;
 }
 
+/*ヘッダー系*/
 .header{
     background-color: #423A57;
 }
@@ -24,6 +25,15 @@ html, body{
     color: #EBC59B;
 }
 
+#memo-button {
+    font-size: 21px;
+}
+
+.nav-link:focus {
+    color: #FDE5C5;
+}
+
+/*共通*/
 .card, .form-label{
     color: #423A57;
     background-color: #FFF9F1;
@@ -36,6 +46,10 @@ html, body{
 
 .card-body{
     background-color: #FFF9F1;
+}
+
+.card {
+    overflow: hidden;
 }
 
 .btn-primary{
@@ -63,11 +77,35 @@ html, body{
     border-color: #5FA9A0 !important;
 }
 
-.memo-list{
-    height: 300px;
-    overflow-y: auto;
+.modal-header{
+    background-color: #423A57;
+    color: #FDE5C5;
 }
 
+.modal-body{
+    background-color: #FFF9F1;
+    color: #423A57;
+}
+
+.modal-footer{
+    background-color: #FFF9F1;
+}
+
+.action-button{
+    width: 150px;
+}
+
+.short-input{
+    width: 100%;
+    max-width: 300px;
+}
+
+.middle-input{
+    width: 100%;
+    max-width: 600px;
+}
+
+/*ダッシュボード*/
 #display-area{
     height: 500px;
 }
@@ -96,32 +134,33 @@ html, body{
     height: 400px !important;
 }
 
-.memo-list .card{
-    overflow: hidden;
+.memo-list{
+    height: 300px;
+    overflow-y: auto;
 }
 
-.modal-header{
-    background-color: #423A57;
-    color: #FDE5C5;
-}
-
-.modal-body{
-    background-color: #FFF9F1;
-    color: #423A57;
-}
-
-.modal-footer{
-    background-color: #FFF9F1;
-}
-
-.memo-button{
-    width: 150px;
-}
-
-.nav-link:focus {
-    color: #FDE5C5;
-}
-
-#memo-date {
+#memo-date{
     cursor: pointer;
+}
+
+#sales-date{
+    cursor: pointer;
+}
+
+.form-content {
+    max-width: 600px;
+}
+
+.toast{
+    /*color: #423A57;*/
+    background-color: #FFF9F1;
+}
+
+.toast-header{
+    color: #FFF9F1;
+    background-color: #CD659F;
+}
+
+.toast-body{
+    font-size: 18px;
 }
