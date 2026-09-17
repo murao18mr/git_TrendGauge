@@ -18,6 +18,10 @@
                         </div>
                         <div class="card-body">
                             <form method="post" enctype="multipart/form-data">
+                                <input type="hidden"
+                                       th:name="${_csrf.parameterName}"
+                                       th:value="${_csrf.token}">
+
                                 <div class="mb-2">
                                     <label for="csv-file" class="form-label">CSVファイル</label>
                                     <input type="file"
@@ -37,21 +41,23 @@
                                         <table class="table table-bordered">
                                             <thead>
                                             <tr>
+                                                <th>行番号</th>
                                                 <th>日付</th>
                                                 <th>売上金額</th>
                                                 <th>客数</th>
+                                                <th>カテゴリ</th>
+                                                <th>カラー</th>
+                                                <th>数量</th>
+                                                <th>小計</th>
+                                                <th>エラー</th>
                                             </tr>
                                             </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td>---</td>
-                                                <td>---</td>
-                                                <td>---</td>
-                                            </tr>
+                                            <tbody id="preview-body">
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
+
                                 <div id="mapping-area" class="mb-2 d-none">
                                     <h5>マッピング設定</h5>
                                     <p>未登録のCSVフォーマットです。各列に該当する項目を選択してください。</p>
@@ -76,8 +82,9 @@
                                        class="btn btn-secondary action-button">
                                         キャンセル
                                     </a>
-                                    <button type="submit"
-                                            class="btn btn-primary action-button">
+                                    <button type="submit" id="import-button"
+                                            class="btn btn-primary action-button"
+                                            disabled>
                                         取り込み実行
                                     </button>
                                 </div>
@@ -89,5 +96,8 @@
         </div>
     </main>
 </div>
+<th:block th:replace="~{fragments/memo-modal :: memo-modal}"></th:block>
+<script src="/js/memo.js"></script>
+<script th:src="@{/js/csv-import.js}"></script>
 </body>
 </html>

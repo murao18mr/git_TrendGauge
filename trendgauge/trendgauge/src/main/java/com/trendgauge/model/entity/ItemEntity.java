@@ -22,7 +22,7 @@ public class ItemEntity {
     @Column(name = "color_name")
     private String colorName;
 
-    private int quantity;
+    private Integer quantity;
 
     private Long subtotal;
 
@@ -35,7 +35,7 @@ public class ItemEntity {
     public ItemEntity() {
     }
 
-    public ItemEntity(Long id, Long saleId, String categoryName, String colorName, int quantity, Long subtotal, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ItemEntity(Long id, Long saleId, String categoryName, String colorName, Integer quantity, Long subtotal, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.saleId = saleId;
         this.categoryName = categoryName;
@@ -78,11 +78,11 @@ public class ItemEntity {
         this.colorName = colorName;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
