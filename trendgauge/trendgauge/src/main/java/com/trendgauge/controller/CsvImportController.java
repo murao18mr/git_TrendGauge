@@ -1,7 +1,9 @@
 package com.trendgauge.controller;
 
+import com.trendgauge.model.entity.MappingEntity;
 import com.trendgauge.model.entity.StoreEntity;
 import com.trendgauge.model.response.CsvPreviewResponse;
+import com.trendgauge.model.response.CsvPreviewResult;
 import com.trendgauge.repository.StoreRepository;
 
 import com.trendgauge.service.CsvImportService;
@@ -28,7 +30,7 @@ public class CsvImportController {
     }
 
     @GetMapping("/import")
-    public String importPage(Authentication authentication, Model model){
+    public String importPage(Authentication authentication, Model model) {
         String storeCode = authentication.getName();
         Optional<StoreEntity> store = storeRepository.findByStoreCode(storeCode);
 
@@ -39,11 +41,16 @@ public class CsvImportController {
 
     @PostMapping("/preview")
     @ResponseBody
-    public List<CsvPreviewResponse> previewCsv(
+    public CsvPreviewResult previewCsv(
             Authentication authentication,
-            @RequestParam("csvFile") MultipartFile csvFile
+            @RequestParam("csvFile") MultipartFile csvFile,
+            @RequestParam(value = "mappingColumns", required = false) List<String> mappingColumns
     ) throws IOException {
         String storeCode = authentication.getName();
+        if (mappingColumns != null && !mappingColumns.isEmpty()) {
+            MappingEntity mapping = csvImportService.createMappingEntity(mappingColumns);
+            return csvImportService.checkCsvWithMapping(csvFile, mapping);
+        }
         return csvImportService.checkCsv(csvFile, storeCode);
     }
 
@@ -51,9 +58,10 @@ public class CsvImportController {
     public String importCsv(
             Authentication authentication,
             @RequestParam("csvFile") MultipartFile csvFile,
+            @RequestParam(value = "mappingColumns", required = false) List<String> mappingColumns,
             RedirectAttributes ra,
             Model model
-    ){
+    ) {
         String storeCode = authentication.getName();
         if (csvFile.isEmpty()) {
             return "sales/import";
@@ -64,15 +72,30 @@ public class CsvImportController {
         if (fileName == null || !fileName.toLowerCase().endsWith(".csv")) {
             return "sales/import";
         }
+
         if (csvFile.getSize() > 100 * 1024 * 1024) {
             return "sales/import";
         }
+
         try {
-            List<CsvPreviewResponse> previewRows = csvImportService.checkCsv(csvFile, storeCode);
+            CsvPreviewResult previewResult;
+            MappingEntity mapping = null;
+
+            if (mappingColumns != null && !mappingColumns.isEmpty()) {
+                mapping = csvImportService.createMappingEntity(mappingColumns);
+                previewResult = csvImportService.checkCsvWithMapping(csvFile, mapping);
+            } else {
+                previewResult = csvImportService.checkCsv(csvFile, storeCode);
+            }
+
+            List<CsvPreviewResponse> previewRows = previewResult.getRows();
             boolean hasError = previewRows.stream().anyMatch(row -> row.getErrorMessage() != null);
-            if(hasError){
+            if (hasError) {
                 model.addAttribute("previewRows", previewRows);
                 return "sales/import";
+            }
+            if (mapping != null) {
+                csvImportService.createMapping(mappingColumns, storeCode);
             }
             csvImportService.importCsv(previewRows, storeCode);
             ra.addFlashAttribute("successMessage", "CSVの取り込みが完了しました");

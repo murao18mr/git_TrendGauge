@@ -23,7 +23,7 @@
                                        th:value="${_csrf.token}">
 
                                 <div class="mb-2">
-                                    <label for="csv-file" class="form-label">CSVファイル</label>
+                                    <label for="csv-file" class="form-label fs-5 fw-bold">CSVファイル</label>
                                     <input type="file"
                                            id="csv-file"
                                            name="csvFile"
@@ -60,21 +60,9 @@
 
                                 <div id="mapping-area" class="mb-2 d-none">
                                     <h5>マッピング設定</h5>
-                                    <p>未登録のCSVフォーマットです。各列に該当する項目を選択してください。</p>
-                                    <div class="mb-3">
-                                        <label for="column1" class="form-label">CSV列1</label>
-                                        <select id="column1" class="form-select">
-                                            <option value="">選択してください</option>
-                                            <option value="date">日付</option>
-                                            <option value="amount">日次売上金額</option>
-                                            <option value="customerCount">客数</option>
-                                            <option value="category">カテゴリ</option>
-                                            <option value="color">カラー</option>
-                                            <option value="quantity">数量</option>
-                                            <option value="subtotal">小計</option>
-                                            <option value="skip">対象外（スキップ）</option>
-                                        </select>
-                                    </div>
+                                    <p>未登録のCSVフォーマットです。各列に該当する項目を選択してください。<strong>日付と日次売上金額は必須項目です。</strong></p>
+                                    <div id="mapping-fields"></div>
+                                    <div id="mapping-hidden-fields"></div>
                                 </div>
 
                                 <div class="d-flex justify-content-center gap-5 mt-3">
@@ -97,6 +85,7 @@
     </main>
 </div>
 <th:block th:replace="~{fragments/memo-modal :: memo-modal}"></th:block>
+<th:block th:replace="~{fragments/manager-login-modal :: manager-login-modal}"></th:block>
 <script src="/js/memo.js"></script>
 <script th:src="@{/js/csv-import.js}"></script>
 </body>

@@ -5,6 +5,7 @@ import com.trendgauge.model.entity.MappingEntity;
 import com.trendgauge.model.entity.SaleEntity;
 import com.trendgauge.model.entity.StoreEntity;
 import com.trendgauge.model.response.CsvPreviewResponse;
+import com.trendgauge.model.response.CsvPreviewResult;
 import com.trendgauge.repository.ItemRepository;
 import com.trendgauge.repository.MappingRepository;
 import com.trendgauge.repository.SaleRepository;
@@ -32,7 +33,7 @@ public class CsvImportService {
     private final SaleService saleService;
     private final ItemRepository itemRepository;
 
-    public CsvImportService(MappingRepository mappingRepository, StoreRepository storeRepository, SaleRepository saleRepository, SaleService saleService, ItemRepository itemRepository){
+    public CsvImportService(MappingRepository mappingRepository, StoreRepository storeRepository, SaleRepository saleRepository, SaleService saleService, ItemRepository itemRepository) {
         this.mappingRepository = mappingRepository;
         this.storeRepository = storeRepository;
         this.saleRepository = saleRepository;
@@ -57,7 +58,53 @@ public class CsvImportService {
         }
     }
 
-    public List<CsvPreviewResponse> checkCsv(MultipartFile csvFile, String storeCode) throws IOException {
+    private boolean mappingMatched(CSVRecord record, MappingEntity mapping) {
+        try {
+            LocalDate.parse(record.get(mapping.getDateColumn()));
+            Long.parseLong(record.get(mapping.getAmountColumn()));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean isMappingMatched(MultipartFile csvFile, MappingEntity mapping) throws IOException {
+        try (InputStream inputStream = csvFile.getInputStream();
+             InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+             CSVParser parser = CSVFormat.DEFAULT.parse(reader)) {
+
+            int checkedRows = 0;
+
+            for (CSVRecord record : parser) {
+                if (mappingMatched(record, mapping)) {
+                    return true;
+                }
+
+                checkedRows++;
+
+                if (checkedRows >= 2) {
+                    break;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private int getColumnCount(MultipartFile csvFile) throws IOException {
+        try (InputStream inputStream = csvFile.getInputStream();
+             InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+             CSVParser parser = CSVFormat.DEFAULT.parse(reader)) {
+
+            for (CSVRecord record : parser) {
+                return record.size();
+            }
+        }
+
+        return 0;
+    }
+
+    public CsvPreviewResult checkCsv(MultipartFile csvFile, String storeCode) throws IOException {
         StoreEntity store = storeRepository.findByStoreCode(storeCode).orElseThrow();
 
         Long mappingId = store.getMappingId();
@@ -66,11 +113,19 @@ public class CsvImportService {
         }
         MappingEntity mapping = mappingRepository.findById(mappingId).orElseThrow();
 
+        if (!isMappingMatched(csvFile, mapping)) {
+            int columnCount = getColumnCount(csvFile);
+            return new CsvPreviewResult(new ArrayList<>(), true, columnCount);
+        }
+
+        return checkCsvWithMapping(csvFile, mapping);
+    }
+
+    public CsvPreviewResult checkCsvWithMapping(MultipartFile csvFile, MappingEntity mapping) throws IOException {
         List<CsvPreviewResponse> previewRows = new ArrayList<>();
 
         InputStream inputStream = csvFile.getInputStream();
         InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-
         CSVParser parser = CSVFormat.DEFAULT.parse(reader);
 
         int rowNumber = 1;
@@ -91,6 +146,7 @@ public class CsvImportService {
 
             LocalDate saleDate = null;
             int dateColumn = mapping.getDateColumn();
+
             if (dateColumn >= columnCount) {
                 errorMessage = addError(errorMessage, "日付列がありません");
             } else {
@@ -103,24 +159,26 @@ public class CsvImportService {
 
             Long amount = null;
             int amountColumn = mapping.getAmountColumn();
-            if (amountColumn >= columnCount){
+
+            if (amountColumn >= columnCount) {
                 errorMessage = addError(errorMessage, "金額列がありません");
-            }else {
+            } else {
                 try {
-                    amount = Long.valueOf(record.get(mapping.getAmountColumn()));
+                    amount = Long.valueOf(record.get(amountColumn));
                 } catch (Exception e) {
                     errorMessage = addError(errorMessage, "売上金額が正しくありません");
                 }
             }
 
             Integer customerColumn = mapping.getCustomerColumn();
-            String customer = null;
             Integer customerCount = null;
+
             if (customerColumn != null) {
                 if (customerColumn >= columnCount) {
                     errorMessage = addError(errorMessage, "客数列がありません");
                 } else {
-                    customer = record.get(customerColumn);
+                    String customer = record.get(customerColumn);
+
                     if (customer != null) {
                         try {
                             customerCount = Integer.valueOf(customer);
@@ -133,6 +191,7 @@ public class CsvImportService {
 
             Integer categoryColumn = mapping.getCategoryColumn();
             String category = null;
+
             if (categoryColumn != null) {
                 if (categoryColumn >= columnCount) {
                     errorMessage = addError(errorMessage, "カテゴリ列がありません");
@@ -143,6 +202,7 @@ public class CsvImportService {
 
             Integer colorColumn = mapping.getColorColumn();
             String color = null;
+
             if (colorColumn != null) {
                 if (colorColumn >= columnCount) {
                     errorMessage = addError(errorMessage, "カラー列がありません");
@@ -150,43 +210,41 @@ public class CsvImportService {
                     color = record.get(colorColumn);
                 }
             }
+
             Integer quantityColumn = mapping.getQuantityColumn();
-            String quantity = null;
+            Integer quantityValue = null;
 
             if (quantityColumn != null) {
                 if (quantityColumn >= columnCount) {
                     errorMessage = addError(errorMessage, "数量列がありません");
                 } else {
-                    quantity = record.get(quantityColumn);
-                }
-            }
-            Integer quantityValue = null;
-            if (quantity != null) {
-                try {
-                    quantityValue = Integer.valueOf(quantity);
-                } catch (Exception e) {
-                    errorMessage = addError(errorMessage, "数量が正しくありません");
-                }
-            }
+                    String quantity = record.get(quantityColumn);
 
+                    try {
+                        quantityValue = Integer.valueOf(quantity);
+                    } catch (Exception e) {
+                        errorMessage = addError(errorMessage, "数量が正しくありません");
+                    }
+                }
+            }
 
             Integer subtotalColumn = mapping.getSubtotalColumn();
-            String subtotal = null;
+            Long subtotalValue = null;
+
             if (subtotalColumn != null) {
                 if (subtotalColumn >= columnCount) {
                     errorMessage = addError(errorMessage, "小計列がありません");
                 } else {
-                    subtotal = record.get(subtotalColumn);
+                    String subtotal = record.get(subtotalColumn);
+
+                    try {
+                        subtotalValue = Long.valueOf(subtotal);
+                    } catch (Exception e) {
+                        errorMessage = addError(errorMessage, "小計が正しくありません");
+                    }
                 }
             }
-            Long subtotalValue = null;
-            if (subtotal != null) {
-                try {
-                    subtotalValue = Long.valueOf(subtotal);
-                } catch (Exception e) {
-                    errorMessage = addError(errorMessage, "小計が正しくありません");
-                }
-            }
+
             CsvPreviewResponse previewRow = new CsvPreviewResponse(
                     rowNumber,
                     saleDate,
@@ -198,36 +256,87 @@ public class CsvImportService {
                     subtotalValue,
                     errorMessage
             );
+
             previewRows.add(previewRow);
             rowNumber++;
         }
-        return previewRows;
+
+        return new CsvPreviewResult(previewRows, false, 0);
     }
 
     public void importCsv(List<CsvPreviewResponse> previewRows, String storeCode) {
         StoreEntity store = storeRepository.findByStoreCode(storeCode).orElseThrow();
 
         for (CsvPreviewResponse row : previewRows) {
-            SaleEntity sale = saleService.getOrCreateSale(
-                    store.getId(),
-                    row.getSaleDate()
-            );
+            SaleEntity sale = saleService.getOrCreateSale(store.getId(), row.getSaleDate());
 
             sale.setAmount(row.getAmount());
             sale.setCustomerCount(row.getCustomerCount());
             sale.setUpdatedAt(LocalDateTime.now());
             saleRepository.save(sale);
 
-            ItemEntity item = new ItemEntity();
-            item.setSaleId(sale.getId());
-            item.setCategoryName(row.getCategory());
-            item.setColorName(row.getColor());
-            item.setQuantity(row.getQuantity());
-            item.setSubtotal(row.getSubtotal());
-            item.setCreatedAt(LocalDateTime.now());
-            item.setUpdatedAt(LocalDateTime.now());
-            itemRepository.save(item);
+            if (row.getCategory() != null && !row.getCategory().isBlank()) {
+                ItemEntity item = new ItemEntity();
+                item.setSaleId(sale.getId());
+                item.setCategoryName(row.getCategory());
+                item.setColorName(row.getColor());
+                item.setQuantity(row.getQuantity() != null ? row.getQuantity() : 0);
+                item.setSubtotal(row.getSubtotal() != null ? row.getSubtotal() : 0L);
+                item.setCreatedAt(LocalDateTime.now());
+                item.setUpdatedAt(LocalDateTime.now());
+                itemRepository.save(item);
+            }
         }
     }
 
+    public MappingEntity createMappingEntity(List<String> mappingColumns) {
+        MappingEntity mapping = new MappingEntity();
+        mapping.setName("CSV自動マッピング");
+
+        for (int i = 0; i < mappingColumns.size(); i++) {
+            String mappingColumn = mappingColumns.get(i);
+
+            switch (mappingColumn) {
+                case "date":
+                    mapping.setDateColumn(i);
+                    break;
+                case "amount":
+                    mapping.setAmountColumn(i);
+                    break;
+                case "customerCount":
+                    mapping.setCustomerColumn(i);
+                    break;
+                case "category":
+                    mapping.setCategoryColumn(i);
+                    break;
+                case "color":
+                    mapping.setColorColumn(i);
+                    break;
+                case "quantity":
+                    mapping.setQuantityColumn(i);
+                    break;
+                case "subtotal":
+                    mapping.setSubtotalColumn(i);
+                    break;
+                case "skip":
+                    break;
+            }
+        }
+
+        return mapping;
+    }
+
+    public MappingEntity createMapping(List<String> mappingColumns, String storeCode) {
+        StoreEntity store = storeRepository.findByStoreCode(storeCode).orElseThrow();
+
+        MappingEntity mapping = createMappingEntity(mappingColumns);
+        mapping.setCreatedAt(LocalDateTime.now());
+        mapping.setUpdatedAt(LocalDateTime.now());
+
+        MappingEntity savedMapping = mappingRepository.save(mapping);
+        store.setMappingId(savedMapping.getId());
+        storeRepository.save(store);
+
+        return savedMapping;
+    }
 }
