@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>店長メニュー - TrendGauge</title>
+
+</head>
+<body>
+<div th:replace="~{layout/index :: layout(~{::title}, ~{::#content})}">
+    <main id="content">
+        <header th:replace="~{fragments/manager-header :: manager-header}"></header>
+        <div class="container py-5">
+
+            <div class="row justify-content-center">
+                <div class="col-md-10" id="manager-menu">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h3>店長メニュー</h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="fs-5 bold mb-5">店舗データの確認・分析、週報作成、各種設定を行えます。</p>
+                            <div class="d-grid gap-4 col-md-8 mx-auto">
+                                <a th:href="@{/manager/sales/edit}" class="btn btn-primary py-3 fs-5">売上データ確認・分析</a>
+                                <a th:href="@{/manager/reports}" class="btn btn-primary py-3 fs-5">ワンタップ週報作成・送信</a>
+                                <a th:href="@{/manager/setting}" class="btn btn-primary py-3 fs-5">店舗設定・予算管理</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -6,20 +6,60 @@
                 <h5 class="modal-title">店長ログイン（PIN認証）</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body text-center">
                 <p>店長用PINコードを入力してください。</p>
+                <p id="pin-error" class="error-message"></p>
+                <input type="password"
+                        id="manager-pin"
+                       name="pin"
+                        class="form-control mb-3"
+                        maxlength="4">
 
-
+                <div class="row g-2 mx-auto" style="max-width: 240px;">
+                    <div class="col-4">
+                        <button type="button" class="btn btn-outline-secondary w-100" data-pin="1">1</button>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-outline-secondary w-100" data-pin="2">2</button>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-outline-secondary w-100" data-pin="3">3</button>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-outline-secondary w-100" data-pin="4">4</button>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-outline-secondary w-100" data-pin="5">5</button>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-outline-secondary w-100" data-pin="6">6</button>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-outline-secondary w-100" data-pin="7">7</button>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-outline-secondary w-100" data-pin="8">8</button>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-outline-secondary w-100" data-pin="9">9</button>
+                    </div>
+                    <div class="col-4"></div>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-outline-secondary w-100" data-pin="0">0</button>
+                    </div>
+                    <div class="col-4">
+                    <button type="button" class="btn btn-danger" id="pin-backspace">⌫</button>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer justify-content-center gap-5">
-                <button type="button" class="btn btn-secondary memo-button" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary action-button" data-bs-dismiss="modal">
                     キャンセル
                 </button>
-                <button type="button" class="btn btn-primary memo-button">
+                <button type="button" id="manager-login-button" class="btn btn-primary action-button">
                     ログイン
                 </button>
             </div>
-
         </div>
     </div>
 </div>

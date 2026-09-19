@@ -69,7 +69,6 @@ document.getElementById("memo-register").addEventListener("click", function () {
                 card.appendChild(cardBody);
                 memoList.appendChild(card);
             });
-            document.getElementById("memo-comment").value = "";
             const modal = bootstrap.Modal.getInstance(document.getElementById("memo-modal"));
             modal.hide();
         })
@@ -83,4 +82,12 @@ document.getElementById("memo-register").addEventListener("click", function () {
                 memoCommentError.textContent = errors.comment;
             }
         });
+});
+
+const memoModal = document.getElementById("memo-modal");
+
+memoModal.addEventListener("hidden.bs.modal", function () {
+    memoDateError.textContent = "";
+    memoCommentError.textContent = "";
+    document.getElementById("memo-comment").value = "";
 });

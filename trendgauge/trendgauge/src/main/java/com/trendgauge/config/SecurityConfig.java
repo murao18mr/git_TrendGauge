@@ -22,7 +22,8 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/error").permitAll()
                         .requestMatchers("/admin/login", "/login").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-//                        .requestMatchers("/manager/**").hasRole("STORE_MANAGER")
+                        .requestMatchers("/manager/login").hasRole("STORE_TERMINAL")
+                        .requestMatchers("/manager/**").hasRole("STORE_MANAGER")
                         .requestMatchers("/main/**", "/sales/new", "/sales/import").hasRole("STORE_TERMINAL")
                         .anyRequest().authenticated()
                 );

@@ -152,7 +152,6 @@ html, body{
 }
 
 .toast{
-    /*color: #423A57;*/
     background-color: #FFF9F1;
 }
 
@@ -164,3 +163,8 @@ html, body{
 .toast-body{
     font-size: 18px;
 }
+
+#manager-menu .card{
+    min-height: 500px;
+}
+

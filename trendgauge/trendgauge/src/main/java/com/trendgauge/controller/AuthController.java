@@ -2,6 +2,7 @@ package com.trendgauge.controller;
 
 import com.trendgauge.model.request.AdminLoginInput;
 import com.trendgauge.service.AdminLoginService;
+import com.trendgauge.service.ManagerPinService;
 import com.trendgauge.service.StoreLoginService;
 import com.trendgauge.model.request.StoreLoginInput;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,9 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -28,11 +27,13 @@ public class AuthController {
 
     private final StoreLoginService storeLoginService;
     public final AdminLoginService adminLoginService;
+    private final ManagerPinService managerPinService;
     private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
-    public AuthController(StoreLoginService storeLoginService, AdminLoginService adminLoginService) {
+    public AuthController(StoreLoginService storeLoginService, AdminLoginService adminLoginService, ManagerPinService managerPinService) {
         this.storeLoginService = storeLoginService;
         this.adminLoginService = adminLoginService;
+        this.managerPinService = managerPinService;
     }
 
     //    店舗ログイン
@@ -122,7 +123,56 @@ public class AuthController {
             ra.addFlashAttribute("errorMessage", "メールアドレスまたはパスワードが正しくありません");
             return "redirect:/admin/login";
         }
+    }
 
+    //    店長ログイン
+    @PostMapping("/manager/login")
+    @ResponseBody
+    public boolean managerLogin(
+            Authentication authentication,
+            @RequestParam("pin") String pin,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        String storeCode = authentication.getName();
+        boolean result = managerPinService.managerLogin(storeCode, pin);
+        if (!result) {
+            return false;
+        }
+        Authentication newAuthentication =
+                new UsernamePasswordAuthenticationToken(
+                        storeCode,
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_STORE_MANAGER"))
+                );
+        SecurityContextHolder.getContext().setAuthentication(newAuthentication);
+        securityContextRepository.saveContext(
+                SecurityContextHolder.getContext(),
+                request,
+                response
+        );
+        return true;
+    }
 
+    @PostMapping("/manager/logout")
+    public String managerLogout(
+            Authentication authentication,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ){
+        String storeCode = authentication.getName();
+        Authentication newAuthentication =
+                new UsernamePasswordAuthenticationToken(
+                        storeCode,
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_STORE_TERMINAL"))
+        );
+        SecurityContextHolder.getContext().setAuthentication(newAuthentication);
+        securityContextRepository.saveContext(
+                SecurityContextHolder.getContext(),
+                request,
+                response
+        );
+        return "redirect:/main";
     }
 }

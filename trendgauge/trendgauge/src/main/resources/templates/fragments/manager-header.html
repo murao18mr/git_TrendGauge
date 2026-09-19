@@ -11,14 +11,31 @@
             <img th:src="@{/images/logo.png}" alt="TrendGauge">
         </a>
 
-        <ul class="navbar-nav flex-row ms-4 gap-5 me-3">
+        <ul class="navbar-nav flex-row align-items-center ms-4 gap-5 me-3">
             <li class="nav-item">
-                <p>店長モード</p>
+                <a th:href="@{/manager/menu}" class="nav-link">
+                    店長メニュー
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/manager/sales/edit}" class="nav-link">
+                    売上データ
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/manager/reports}" class="nav-link">
+                    週報
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/manager/setting}" class="nav-link">
+                    設定
+                </a>
             </li>
             <li class="nav-item">
-                <form th:action="@{/logout}" method="post">
+                <form th:action="@{/manager/logout}" method="post">
                     <button type="submit" class="nav-link">
-                        店長モードからログアウトして店舗ダッシュボードに戻る
+                        店舗ダッシュボードに戻る
                     </button>
                 </form>
             </li>
