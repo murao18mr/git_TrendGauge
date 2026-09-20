@@ -44,4 +44,8 @@ public class MemoService {
         return memoRepository.findBySaleIdOrderByCreatedAtAsc(sale.get().getId());
     }
 
+    public List<MemoEntity> getMemos(Long saleId){
+        return memoRepository.findBySaleIdOrderByCreatedAtAsc(saleId);
+    }
+
 }

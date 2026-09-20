@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>売上データ確認・分析 - TrendGauge</title>
+
+</head>
+<body>
+<div th:replace="~{layout/index :: layout(~{::title}, ~{::#content})}">
+    <main id="content">
+        <header th:replace="~{fragments/manager-header :: manager-header}"></header>
+        <div class="container py-5">
+
+            <div class="row justify-content-center">
+                <div class="col-md-11" id="manager-menu">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h3>売上データ確認・分析</h3>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="gap-5 d-flex justify-content-around m-3">
+                                <button id="sales" type="button" class="btn btn-primary btn-lg tab-button sales-tab">
+                                    売上データ確認・修正
+                                </button>
+                                <button id="keyword" type="button" class="btn btn-primary btn-lg tab-button sales-tab">
+                                    データ・キーワード分析
+                                </button>
+                            </div>
+
+                            <div id="search-area" class="mb-4">
+                                <button class="btn btn-outline-secondary w-100 text-start d-flex justify-content-between align-items-center"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#search-form"
+                                        aria-expanded="false"
+                                        aria-controls="search-form">
+                                    <span><i class="bi bi-funnel"></i> 絞り込み検索条件を設定</span>
+                                </button>
+
+                                <div id="search-form" class="collapse">
+                                    <div class="search-form-panel">
+                                        <div class="row g-3 mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">日付</label>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <input id="search-date-from" type="date" class="form-control">
+                                                    <span>～</span>
+                                                    <input id="search-date-to" type="date" class="form-control">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label">売上金額</label>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <input id="search-amount-from" type="number" class="form-control"
+                                                           min="0" placeholder="最小金額">
+                                                    <span>円 ～</span>
+                                                    <input id="search-amount-to" type="number" class="form-control"
+                                                           min="0" placeholder="最大金額">
+                                                    <span>円</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row g-3 mb-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label">客数</label>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <input id="search-customer-from" type="number" class="form-control"
+                                                           min="0" placeholder="最小">
+                                                    <span>～</span>
+                                                    <input id="search-customer-to" type="number" class="form-control"
+                                                           min="0" placeholder="最大">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label">客単価</label>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <input id="search-unit-price-from" type="number"
+                                                           class="form-control" min="0" placeholder="最小">
+                                                    <span>～</span>
+                                                    <input id="search-unit-price-to" type="number" class="form-control"
+                                                           min="0" placeholder="最大">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label for="search-weather" class="form-label">天候</label>
+                                                <select id="search-weather" class="form-select">
+                                                    <option value="">すべて</option>
+                                                    <option value="晴れ">晴れ</option>
+                                                    <option value="曇り">曇り</option>
+                                                    <option value="雨">雨</option>
+                                                    <option value="雪">雪</option>
+                                                    <option value="その他">その他</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <button id="clear-search-button" type="button"
+                                                    class="btn btn-secondary px-4">
+                                                クリア
+                                            </button>
+                                            <button id="search-button" type="button" class="btn btn-primary px-4">
+                                                <i class="bi bi-search"></i>
+                                                検索
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="no-data-message" class="text-center py-4" style="display: none;">
+                                該当データがありません。
+                            </div>
+
+                            <div id="data-display-area">
+                                <div id="sales-area">
+                                    <h5 class="mb-3">売上データ一覧</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>日付</th>
+                                                <th>売上金額</th>
+                                                <th>客数</th>
+                                                <th>客単価</th>
+                                                <th>天候</th>
+                                                <th>所感・メモ</th>
+                                                <th>操作</th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            <tr th:each="sale : ${sales}"
+                                                th:data-sale-date="${sale.saleDate}"
+                                                th:data-amount="${sale.amount}"
+                                                th:data-customer-count="${sale.customerCount}"
+                                                th:data-unit-price="${sale.unitPrice}"
+                                                th:data-weather="${sale.weather}">
+
+                                                <td th:text="${#temporals.format(sale.saleDate, 'yyyy/MM/dd（E）')}"></td>
+
+                                                <td th:text="${sale.amount != null ? sale.amount + '円' : '-'}"></td>
+
+                                                <td th:text="${sale.customerCount != null ? sale.customerCount + '人' : '-'}"></td>
+
+                                                <td th:text="${sale.unitPrice != null ? sale.unitPrice + '円' : '-'}"></td>
+
+                                                <td th:text="${sale.weather != null ? sale.weather : '-'}"></td>
+
+                                                <td>
+                                                    <div class="mb-2">
+                                                        <strong>日次報告</strong>
+                                                        <div th:text="${sale.report != null && sale.report.summary != null ? sale.report.summary : '-'}"></div>
+                                                    </div>
+
+                                                    <div th:if="${!sale.memos.isEmpty()}">
+                                                        <strong>メモ</strong>
+                                                        <div th:each="memo : ${sale.memos}" th:text="${memo.comment}"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-primary"
+                                                            th:data-sale-id="${sale.saleId}">修正
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div id="keyword-area">
+                                    <h5 class="mb-3">頻出キーワード</h5>
+
+                                    <div class="d-flex flex-wrap gap-2 mb-4">
+                                        <button type="button" class="btn btn-outline-primary">接客</button>
+                                        <button type="button" class="btn btn-outline-primary">新商品</button>
+                                        <button type="button" class="btn btn-outline-primary">セール</button>
+                                        <button type="button" class="btn btn-outline-primary">サイズ</button>
+                                        <button type="button" class="btn btn-outline-primary">在庫</button>
+                                        <button type="button" class="btn btn-outline-primary">試着</button>
+                                        <button type="button" class="btn btn-outline-primary">人気</button>
+                                        <button type="button" class="btn btn-outline-primary">入荷</button>
+                                        <button type="button" class="btn btn-outline-primary">予約</button>
+                                        <button type="button" class="btn btn-outline-primary">欠品</button>
+                                    </div>
+
+                                    <h5 class="mb-3">「接客」を含む所感・メモ</h5>
+                                    <div id="keyword-table">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>日付</th>
+                                                <th>売上金額</th>
+                                                <th>天候</th>
+                                                <th>所感・メモ</th>
+                                            </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+<!--                            修正モーダル-->
+                            <div class="modal fade" id="sales-edit-modal" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">売上データ修正</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="edit-sale-date" class="form-label">日付</label>
+                                                <input type="date" id="edit-sale-date" class="form-control" readonly>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="edit-amount" class="form-label">売上金額</label>
+                                                <input type="number" id="edit-amount" class="form-control" min="0">
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="edit-customer-count" class="form-label">客数</label>
+                                                <input type="number" id="edit-customer-count" class="form-control" min="0">
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="edit-weather" class="form-label">天候</label>
+                                                <select id="edit-weather" class="form-select">
+                                                    <option value="">未選択</option>
+                                                    <option value="晴れ">晴れ</option>
+                                                    <option value="曇り">曇り</option>
+                                                    <option value="雨">雨</option>
+                                                    <option value="雪">雪</option>
+                                                    <option value="その他">その他</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="edit-report" class="form-label">日次報告</label>
+                                                <textarea id="edit-report" class="form-control" rows="4"></textarea>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">メモ</label>
+                                                <div id="edit-memo"></div>
+                                                <button type="button" class="btn btn-primary mt-2" id="add-memo">＋ メモを追加</button>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="modal-footer justify-content-center gap-5">
+                                            <button type="button" class="btn btn-secondary action-button" data-bs-dismiss="modal">
+                                                キャンセル
+                                            </button>
+                                            <button type="button" class="btn btn-primary action-button" id="edit">
+                                                保存
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<button type="button" id="back-to-top" class="btn btn-primary">
+    ↑ TOP
+</button>
+
+<script src="/js/sales-edit.js"></script>
+</body>
+</html>

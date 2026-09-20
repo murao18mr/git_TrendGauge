@@ -164,7 +164,25 @@ html, body{
     font-size: 18px;
 }
 
+/*店長モード*/
 #manager-menu .card{
     min-height: 500px;
 }
 
+.sales-tab{
+    width: 300px;
+}
+
+.search-form-panel{
+    padding: 1.25rem;
+    border: 1px solid;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+}
+
+#back-to-top{
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1000;
+}

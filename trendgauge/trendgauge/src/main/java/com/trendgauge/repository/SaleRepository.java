@@ -23,4 +23,6 @@ public interface SaleRepository extends JpaRepository<SaleEntity, Long> {
     Optional<SaleEntity> findByStoreIdAndSaleDate(Long storeId, LocalDate saleDate);
 
     List<SaleEntity> findByStoreIdAndSaleDateBetween(Long storeId, LocalDate startDate, LocalDate endDate);
+
+    List<SaleEntity> findByStoreIdOrderBySaleDateDesc(Long storeId);
 }
