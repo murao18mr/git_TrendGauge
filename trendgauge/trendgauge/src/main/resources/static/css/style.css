@@ -1,27 +1,27 @@
-html, body{
+html, body {
     background-color: #FDE5C5;
 }
 
-.error-message{
+.error-message {
     color: red;
     margin: 0;
 }
 
 /*ヘッダー系*/
-.header{
+.header {
     background-color: #423A57;
 }
 
-.navbar-brand img{
+.navbar-brand img {
     height: 80px;
 }
 
-.nav-link{
+.nav-link {
     color: #FDE5C5;
     font-size: 20px;
 }
 
-.nav-link:hover{
+.nav-link:hover {
     color: #EBC59B;
 }
 
@@ -34,17 +34,17 @@ html, body{
 }
 
 /*共通*/
-.card, .form-label{
+.card, .form-label {
     color: #423A57;
     background-color: #FFF9F1;
 }
 
-.card-header{
+.card-header {
     background-color: #423A57;
     color: #FDE5C5;
 }
 
-.card-body{
+.card-body {
     background-color: #FFF9F1;
 }
 
@@ -52,98 +52,98 @@ html, body{
     overflow: hidden;
 }
 
-.btn-primary{
+.btn-primary {
     background-color: #77C2B9;
     border-color: #77C2B9;
 }
 
-.btn-primary:hover{
+.btn-primary:hover {
     background-color: #5FA9A0;
     border-color: #5FA9A0;
 }
 
-.btn-primary:disabled{
+.btn-primary:disabled {
     background-color: #a9a9a9;
     border-color: #a9a9a9;
 }
 
-.tab-button.active{
+.tab-button.active {
     background-color: #CD659F;
     border-color: #CD659F;
 }
 
-.btn-primary:active{
+.btn-primary:active {
     background-color: #5FA9A0 !important;
     border-color: #5FA9A0 !important;
 }
 
-.modal-header{
+.modal-header {
     background-color: #423A57;
     color: #FDE5C5;
 }
 
-.modal-body{
+.modal-body {
     background-color: #FFF9F1;
     color: #423A57;
 }
 
-.modal-footer{
+.modal-footer {
     background-color: #FFF9F1;
 }
 
-.action-button{
+.action-button {
     width: 150px;
 }
 
-.short-input{
+.short-input {
     width: 100%;
     max-width: 300px;
 }
 
-.middle-input{
+.middle-input {
     width: 100%;
     max-width: 600px;
 }
 
 /*ダッシュボード*/
-#display-area{
+#display-area {
     height: 500px;
 }
 
-.ranking-chart-scroll{
+.ranking-chart-scroll {
     height: 430px;
     overflow-y: auto;
 }
 
-.ranking-chart-container{
+.ranking-chart-container {
     position: relative;
     min-height: 250px;
 }
 
-.display-card .card-body{
+.display-card .card-body {
     padding-top: 0.5rem;
     padding-bottom: 0;
 }
 
 #ratio-ranking-area,
-#budget-ranking-area{
+#budget-ranking-area {
     padding-bottom: 0.5rem;
 }
 
-.graph-card canvas{
+.graph-card canvas {
     height: 400px !important;
 }
 
-.memo-list{
+.memo-list {
     height: 300px;
     overflow-y: auto;
 }
 
-#memo-date{
+#memo-date {
     cursor: pointer;
 }
 
-#sales-date{
+#sales-date {
     cursor: pointer;
 }
 
@@ -151,38 +151,55 @@ html, body{
     max-width: 600px;
 }
 
-.toast{
+.toast {
     background-color: #FFF9F1;
 }
 
-.toast-header{
+.toast-header {
     color: #FFF9F1;
     background-color: #CD659F;
 }
 
-.toast-body{
+.toast-body {
     font-size: 18px;
 }
 
 /*店長モード*/
-#manager-menu .card{
+#manager-menu .card {
     min-height: 500px;
 }
 
-.sales-tab{
+.sales-tab {
     width: 300px;
 }
 
-.search-form-panel{
+.search-form-panel {
     padding: 1.25rem;
     border: 1px solid;
     border-top: none;
     border-radius: 0 0 6px 6px;
 }
 
-#back-to-top{
+#back-to-top {
     position: fixed;
     right: 24px;
     bottom: 24px;
     z-index: 1000;
+}
+
+.keyword-button.active {
+    background-color: #CD659F;
+    border-color: #CD659F;
+}
+
+.setting-section {
+    background-color: #FFFCF7;
+}
+
+.table .saturday td {
+    color: blue;
+}
+
+.table .sunday td {
+    color: red;
 }

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>店舗設定・予算管理 - TrendGauge</title>
+
+</head>
+<body>
+<div th:replace="~{layout/index :: layout(~{::title}, ~{::#content})}">
+    <main id="content">
+        <header th:replace="~{fragments/manager-header :: manager-header}"></header>
+        <div class="container py-5">
+
+            <div class="row justify-content-center">
+                <div class="col-md-11">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h3>店舗設定・予算管理</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <div id="store-data" class="card mb-5 p-2 setting-section">
+                                <h5 class="mb-3">店舗データ</h5>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <strong>店舗名：</strong>
+                                        <span th:text="${store.storeName}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>店舗コード：</strong>
+                                        <span th:text="${store.storeCode}"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>営業時間：</strong>
+                                        <span th:text="${store.openingTime}"></span>
+                                        ～
+                                        <span th:text="${store.closingTime}"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="target-setting" class="card mb-5 p-2 setting-section">
+                                <h5>予算設定</h5>
+                                <form th:action="@{/manager/setting/target}" method="post">
+                                    <div class="row align-items-end">
+                                        <div class="col-md-3">
+                                            <label for="target-month" class="form-label">対象年月</label>
+                                            <input type="month"
+                                                   id="target-month"
+                                                   name="targetMonth"
+                                                   class="form-control">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label for="target-amount" class="form-label">月間予算</label>
+                                            <input type="number"
+                                                   id="target-amount"
+                                                   name="targetAmount"
+                                                   class="form-control"
+                                                   min="0">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label for="last-year-ratio" class="form-label">昨年度対比目標</label>
+                                            <div class="input-group">
+                                                <input type="number"
+                                                       id="last-year-ratio"
+                                                       name="targetRatio"
+                                                       class="form-control"
+                                                       min="0">
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <button type="button" id="daily-target-button" class="btn btn-primary px-4"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#daily-target-modal">
+                                                日割り予算設定
+                                            </button>
+                                        </div>
+                                        <!--                                    日割り予算モーダル-->
+                                        <div class="modal fade" id="daily-target-modal" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">日割り予算設定</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label for="daily-target-month"
+                                                                   class="form-label">対象年月</label>
+                                                            <input type="month" id="daily-target-month"
+                                                                   class="form-control">
+                                                        </div>
+
+                                                        <div class="mb-3">
+                                                            <label for="allocation-pattern"
+                                                                   class="form-label">配分パターン</label>
+                                                            <select id="allocation-pattern" class="form-select">
+                                                                <option value="equal">均一配分</option>
+                                                                <option value="weekend">土日1.5倍</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered text-center">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>日付</th>
+                                                                    <th>曜日</th>
+                                                                    <th>曜日タイプ</th>
+                                                                    <th>日割り予算</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody id="daily-target-body">
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">キャンセル
+                                                        </button>
+                                                        <button type="button" class="btn btn-primary px-3">保存</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-end mt-4">
+                                        <button type="submit" id="save-target-button" class="btn btn-primary px-4">
+                                            目標を保存
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div id="pin-setting" class="card p-2 setting-section">
+                                <h5>店長PINコード変更</h5>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="current-pin" class="form-label">現在のPINコード</label>
+                                        <input type="password" id="current-pin" class="form-control"
+                                               maxlength="4" inputmode="numeric" required>
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label for="new-pin" class="form-label">新しいPINコード</label>
+                                        <input type="password" id="new-pin" class="form-control"
+                                               maxlength="4" inputmode="numeric" required>
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label for="confirm-pin" class="form-label">新しいPINコード（確認）</label>
+                                        <input type="password" id="confirm-pin" class="form-control"
+                                               maxlength="4" inputmode="numeric" required>
+                                    </div>
+                                </div>
+
+                                <div class="text-end mt-3">
+                                    <button type="button" id="change-pin-button" class="btn btn-primary">
+                                        PINコードを変更
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="/js/manager-setting.js"></script>
+</body>
+</html>

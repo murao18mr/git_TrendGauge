@@ -55,6 +55,10 @@ public class StoreDashboardService {
         return store.get().getCompanyId();
     }
 
+    public StoreEntity getStore(String storeCode){
+        return storeRepository.findByStoreCode(storeCode).orElse(null);
+    }
+
     public BigDecimal calculateRatio(Long storeId){
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.withDayOfMonth(1);

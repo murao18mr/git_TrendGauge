@@ -5,6 +5,8 @@ import com.trendgauge.model.entity.ReportEntity;
 import com.trendgauge.model.entity.SaleEntity;
 import com.trendgauge.model.request.MemoEditInput;
 import com.trendgauge.model.request.SalesEditInput;
+import com.trendgauge.model.response.KeywordResponse;
+import com.trendgauge.model.response.KeywordResultResponse;
 import com.trendgauge.model.response.ManagerSalesResponse;
 import com.trendgauge.repository.MemoRepository;
 import com.trendgauge.repository.ReportRepository;
@@ -16,7 +18,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ManagerSalesService {
@@ -127,5 +131,86 @@ public class ManagerSalesService {
                 }
             }
         }
+    }
+
+    private static final List<String> KEYWORDS = List.of(
+            "接客", "新商品", "セール", "サイズ", "在庫",
+            "試着", "人気", "入荷", "予約", "欠品"
+    );
+
+    public List<KeywordResponse> getKeywords(String storeCode){
+        Long storeId = storeDashboardService.getStoreId(storeCode);
+        List<SaleEntity> sales = saleRepository.findByStoreIdOrderBySaleDateDesc(storeId);
+
+        Map<String, Integer> counts = new HashMap<>();
+
+        for (String keyword : KEYWORDS) {
+            counts.put(keyword, 0);
+        }
+
+        for (SaleEntity sale : sales) {
+            ReportEntity report = reportRepository.findBySaleId(sale.getId()).orElse(null);
+
+            if (report != null && report.getSummary() != null) {
+                for (String keyword : KEYWORDS) {
+                    if (report.getSummary().contains(keyword)) {
+                        counts.put(keyword, counts.get(keyword) + 1);
+                    }
+                }
+            }
+
+            List<MemoEntity> memos = memoService.getMemos(sale.getId());
+
+            for (MemoEntity memo : memos) {
+                if (memo.getComment() != null) {
+                    for (String keyword : KEYWORDS) {
+                        if (memo.getComment().contains(keyword)) {
+                            counts.put(keyword, counts.get(keyword) + 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        return counts.entrySet().stream()
+                .filter(entry -> entry.getValue() > 0)
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .limit(10)
+                .map(entry -> new KeywordResponse(entry.getKey(), entry.getValue()))
+                .toList();
+    }
+
+    public List<KeywordResultResponse> searchKeyword(String storeCode, String keyword) {
+        Long storeId = storeDashboardService.getStoreId(storeCode);
+        List<SaleEntity> sales = saleRepository.findByStoreIdOrderBySaleDateDesc(storeId);
+        List<KeywordResultResponse> results = new ArrayList<>();
+
+        for (SaleEntity sale : sales) {
+            ReportEntity report = reportRepository.findBySaleId(sale.getId()).orElse(null);
+
+            if (report != null && report.getSummary() != null && report.getSummary().contains(keyword)) {
+                results.add(new KeywordResultResponse(
+                        sale.getSaleDate(),
+                        sale.getAmount(),
+                        sale.getWeather(),
+                        report.getSummary()
+                ));
+            }
+
+            List<MemoEntity> memos = memoService.getMemos(sale.getId());
+
+            for (MemoEntity memo : memos) {
+                if (memo.getComment() != null && memo.getComment().contains(keyword)) {
+                    results.add(new KeywordResultResponse(
+                            sale.getSaleDate(),
+                            sale.getAmount(),
+                            sale.getWeather(),
+                            memo.getComment()
+                    ));
+                }
+            }
+        }
+
+        return results;
     }
 }

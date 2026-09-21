@@ -12,7 +12,7 @@
         <div class="container py-5">
 
             <div class="row justify-content-center">
-                <div class="col-md-11" id="manager-menu">
+                <div class="col-md-11">
                     <div class="card">
                         <div class="card-header text-center">
                             <h3>売上データ確認・分析</h3>
@@ -178,19 +178,10 @@
                                     <h5 class="mb-3">頻出キーワード</h5>
 
                                     <div class="d-flex flex-wrap gap-2 mb-4">
-                                        <button type="button" class="btn btn-outline-primary">接客</button>
-                                        <button type="button" class="btn btn-outline-primary">新商品</button>
-                                        <button type="button" class="btn btn-outline-primary">セール</button>
-                                        <button type="button" class="btn btn-outline-primary">サイズ</button>
-                                        <button type="button" class="btn btn-outline-primary">在庫</button>
-                                        <button type="button" class="btn btn-outline-primary">試着</button>
-                                        <button type="button" class="btn btn-outline-primary">人気</button>
-                                        <button type="button" class="btn btn-outline-primary">入荷</button>
-                                        <button type="button" class="btn btn-outline-primary">予約</button>
-                                        <button type="button" class="btn btn-outline-primary">欠品</button>
+                                        <div id="keyword-buttons" class="d-flex flex-wrap gap-2 mb-4"></div>
                                     </div>
 
-                                    <h5 class="mb-3">「接客」を含む所感・メモ</h5>
+                                    <h5 id="keyword-result-title" class="mb-3">キーワードを選択してください</h5>
                                     <div id="keyword-table">
                                         <table class="table table-bordered table-hover">
                                             <thead>
@@ -201,6 +192,7 @@
                                                 <th>所感・メモ</th>
                                             </tr>
                                             </thead>
+                                            <tbody id="keyword-result-body"></tbody>
                                         </table>
                                     </div>
                                 </div>

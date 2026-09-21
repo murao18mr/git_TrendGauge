@@ -260,3 +260,68 @@ saveButton.addEventListener("click", function () {
             console.error(error);
         });
 });
+
+// キーワード分析
+const keywordButtons = document.getElementById("keyword-buttons");
+
+function loadKeywords() {
+    fetch("/manager/sales/keywords")
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (keywords) {
+            keywordButtons.innerHTML = "";
+
+            keywords.forEach(function (item) {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "btn btn-primary keyword-button";
+                button.textContent = item.keyword;
+                button.dataset.keyword = item.keyword;
+
+                button.addEventListener("click", function () {
+                    document.querySelectorAll(".keyword-button").forEach(function (button) {
+                        button.classList.remove("active");
+                    });
+
+                    button.classList.add("active");
+
+                    loadKeywordResults(item.keyword);
+                });
+
+                keywordButtons.appendChild(button);
+            });
+        });
+}
+
+function loadKeywordResults(keyword) {
+    fetch("/manager/sales/keywords/" + encodeURIComponent(keyword))
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (results) {
+            displayKeywordResults(keyword, results);
+        });
+}
+
+loadKeywords();
+
+function displayKeywordResults(keyword, results) {
+    const title = document.getElementById("keyword-result-title");
+    const body = document.getElementById("keyword-result-body");
+
+    title.textContent = "「" + keyword + "」を含む所感・メモ";
+    body.innerHTML = "";
+
+    results.forEach(function (result) {
+        const row = document.createElement("tr");
+
+        row.innerHTML =
+            "<td>" + result.saleDate + "</td>" +
+            "<td>" + (result.amount != null ? result.amount + "円" : "-") + "</td>" +
+            "<td>" + (result.weather || "-") + "</td>" +
+            "<td>" + result.text + "</td>";
+
+        body.appendChild(row);
+    });
+}

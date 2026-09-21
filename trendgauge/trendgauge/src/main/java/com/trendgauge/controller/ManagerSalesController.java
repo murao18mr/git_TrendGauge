@@ -3,6 +3,8 @@ package com.trendgauge.controller;
 import com.trendgauge.model.entity.MemoEntity;
 import com.trendgauge.model.entity.ReportEntity;
 import com.trendgauge.model.request.SalesEditInput;
+import com.trendgauge.model.response.KeywordResponse;
+import com.trendgauge.model.response.KeywordResultResponse;
 import com.trendgauge.model.response.ManagerSalesResponse;
 import com.trendgauge.service.ManagerSalesService;
 import com.trendgauge.service.MemoService;
@@ -61,5 +63,21 @@ public class ManagerSalesController {
     public void updateSales(@RequestBody SalesEditInput input, Authentication authentication) {
         String storeCode = authentication.getName();
         managerSalesService.updateSale(storeCode, input);
+    }
+
+    @GetMapping("/keywords")
+    @ResponseBody
+    public List<KeywordResponse> getKeywords(Authentication authentication) {
+        String storeCode = authentication.getName();
+        return managerSalesService.getKeywords(storeCode);
+    }
+
+    @GetMapping("/keywords/{keyword}")
+    @ResponseBody
+    public List<KeywordResultResponse> searchKeyword(
+            @PathVariable String keyword,
+            Authentication authentication) {
+        String storeCode = authentication.getName();
+        return managerSalesService.searchKeyword(storeCode, keyword);
     }
 }
