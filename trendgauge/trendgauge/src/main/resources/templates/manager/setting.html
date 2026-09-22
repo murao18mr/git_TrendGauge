@@ -40,26 +40,30 @@
 
                             <div id="target-setting" class="card mb-5 p-2 setting-section">
                                 <h5>予算設定</h5>
-                                <form th:action="@{/manager/setting/target}" method="post">
+                                <form th:action="@{/manager/setting/target}" method="post" th:object="${targetInput}">
                                     <div class="row align-items-end">
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <label for="target-month" class="form-label">対象年月</label>
+                                            <p class="error-message" th:if="${#fields.hasErrors('targetMonth')}"
+                                               th:errors="*{targetMonth}"></p>
                                             <input type="month"
                                                    id="target-month"
-                                                   name="targetMonth"
-                                                   class="form-control">
+                                                   class="form-control"
+                                                   th:field="*{targetMonth}">
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <label for="target-amount" class="form-label">月間予算</label>
+                                            <p class="error-message" th:if="${#fields.hasErrors('targetAmount')}"
+                                               th:errors="*{targetAmount}"></p>
                                             <input type="number"
                                                    id="target-amount"
-                                                   name="targetAmount"
                                                    class="form-control"
+                                                   th:field="*{targetAmount}"
                                                    min="0">
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <label for="last-year-ratio" class="form-label">昨年度対比目標</label>
                                             <div class="input-group">
                                                 <input type="number"
@@ -70,103 +74,139 @@
                                                 <span class="input-group-text">%</span>
                                             </div>
                                         </div>
-
-                                        <div class="col-md-3">
-                                            <button type="button" id="daily-target-button" class="btn btn-primary px-4"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#daily-target-modal">
-                                                日割り予算設定
-                                            </button>
-                                        </div>
-                                        <!--                                    日割り予算モーダル-->
-                                        <div class="modal fade" id="daily-target-modal" tabindex="-1">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">日割り予算設定</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                    </div>
-
-                                                    <div class="modal-body">
-                                                        <div class="mb-3">
-                                                            <label for="daily-target-month"
-                                                                   class="form-label">対象年月</label>
-                                                            <input type="month" id="daily-target-month"
-                                                                   class="form-control">
-                                                        </div>
-
-                                                        <div class="mb-3">
-                                                            <label for="allocation-pattern"
-                                                                   class="form-label">配分パターン</label>
-                                                            <select id="allocation-pattern" class="form-select">
-                                                                <option value="equal">均一配分</option>
-                                                                <option value="weekend">土日1.5倍</option>
-                                                            </select>
-                                                        </div>
-
-                                                        <div class="table-responsive">
-                                                            <table class="table table-bordered text-center">
-                                                                <thead>
-                                                                <tr>
-                                                                    <th>日付</th>
-                                                                    <th>曜日</th>
-                                                                    <th>曜日タイプ</th>
-                                                                    <th>日割り予算</th>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody id="daily-target-body">
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">キャンセル
-                                                        </button>
-                                                        <button type="button" class="btn btn-primary px-3">保存</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
-
-                                    <div class="text-end mt-4">
+                                    <div class="text-end mt-3">
                                         <button type="submit" id="save-target-button" class="btn btn-primary px-4">
                                             目標を保存
                                         </button>
                                     </div>
                                 </form>
+
+                                <div class="d-flex align-items-center mt-3 p-3 border-top">
+                                    <p class="mb-0">日割り予算を個別に設定する場合はこちら</p>
+                                    <button type="button"
+                                            id="daily-target-button"
+                                            class="btn btn-primary px-4 ms-3"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#daily-target-modal">
+                                        日割り予算設定
+                                    </button>
+                                </div>
+
+                                <!--                                    日割り予算モーダル-->
+                                <div class="modal fade" id="daily-target-modal" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">日割り予算設定</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="daily-target-month"
+                                                           class="form-label">対象年月</label>
+                                                    <p id="daily-target-month-error" class="error-message"></p>
+                                                    <input type="month" id="daily-target-month"
+                                                           class="form-control">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="allocation-pattern"
+                                                           class="form-label">配分パターン</label>
+                                                    <select id="allocation-pattern" class="form-select">
+                                                        <option value="">配分パターンを選択</option>
+                                                        <option value="equal">均一配分</option>
+                                                        <option value="weekend">土日1.5倍</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="table-responsive">
+                                                    <p>各日の日割り予算を手動設定することもできます。</p>
+                                                    <p>※日割り予算を保存済みの場合は、保存済みの金額が優先されます。<br>
+                                                        配分パターンを変更しても自動再計算されません。</p>
+                                                    <table class="table table-bordered text-center">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>日付</th>
+                                                            <th>曜日</th>
+                                                            <th>曜日タイプ</th>
+                                                            <th>日割り予算</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody id="daily-target-body">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">キャンセル
+                                                </button>
+                                                <button type="button" id="save-daily-target-button"
+                                                        class="btn btn-primary px-3">保存
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div id="pin-setting" class="card p-2 setting-section">
-                                <h5>店長PINコード変更</h5>
-                                <div class="row">
-                                    <div class="col-md-4 mb-3">
-                                        <label for="current-pin" class="form-label">現在のPINコード</label>
-                                        <input type="password" id="current-pin" class="form-control"
-                                               maxlength="4" inputmode="numeric" required>
-                                    </div>
+                                <div id="error-scroll-area"
+                                     th:data-scroll-to-error="${scrollToError ?: false}">
+                                    <h5>店長PINコード変更</h5>
+                                    <form th:action="@{/manager/setting/pin}" method="post"
+                                          th:object="${managerPinInput}">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <label for="current-pin" class="form-label">現在のPINコード</label>
+                                                <p class="error-message" th:if="${#fields.hasErrors('pin')}"
+                                                   th:errors="*{pin}"></p>
+                                                <input type="password"
+                                                       id="current-pin"
+                                                       th:field="*{pin}"
+                                                       class="form-control"
+                                                       maxlength="4"
+                                                       inputmode="numeric">
+                                            </div>
 
-                                    <div class="col-md-4 mb-3">
-                                        <label for="new-pin" class="form-label">新しいPINコード</label>
-                                        <input type="password" id="new-pin" class="form-control"
-                                               maxlength="4" inputmode="numeric" required>
-                                    </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="new-pin" class="form-label">新しいPINコード</label>
+                                                <p class="error-message" th:if="${#fields.hasErrors('newPin')}"
+                                                   th:errors="*{newPin}"></p>
+                                                <input type="password"
+                                                       id="new-pin"
+                                                       th:field="*{newPin}"
+                                                       class="form-control"
+                                                       maxlength="4"
+                                                       inputmode="numeric">
+                                            </div>
 
-                                    <div class="col-md-4 mb-3">
-                                        <label for="confirm-pin" class="form-label">新しいPINコード（確認）</label>
-                                        <input type="password" id="confirm-pin" class="form-control"
-                                               maxlength="4" inputmode="numeric" required>
-                                    </div>
-                                </div>
-
-                                <div class="text-end mt-3">
-                                    <button type="button" id="change-pin-button" class="btn btn-primary">
-                                        PINコードを変更
-                                    </button>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="confirm-pin"
+                                                       class="form-label">新しいPINコード（確認）</label>
+                                                <p class="error-message" th:if="${#fields.hasErrors('confirmPin')}"
+                                                   th:errors="*{confirmPin}"></p>
+                                                <p class="error-message" th:if="${#fields.hasErrors('pinMatching')}"
+                                                   th:errors="*{pinMatching}"></p>
+                                                <input type="password"
+                                                       id="confirm-pin"
+                                                       th:field="*{confirmPin}"
+                                                       class="form-control"
+                                                       maxlength="4"
+                                                       inputmode="numeric">
+                                            </div>
+                                        </div>
+                                        <div class="text-end mt-3">
+                                            <button type="submit" id="change-pin-button" class="btn btn-primary">
+                                                PINコードを変更
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>

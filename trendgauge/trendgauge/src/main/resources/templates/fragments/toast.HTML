@@ -1,5 +1,4 @@
 <div th:fragment="toast"
-     th:if="${successMessage != null}"
      class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
 
     <div id="success-toast"
@@ -18,7 +17,8 @@
             </button>
         </div>
 
-        <div class="toast-body"
+        <div id="success-toast-body"
+             class="toast-body"
              th:text="${successMessage}">
         </div>
 

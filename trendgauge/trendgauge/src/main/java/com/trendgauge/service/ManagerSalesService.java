@@ -40,7 +40,7 @@ public class ManagerSalesService {
 
     public List<ManagerSalesResponse> getSales(String storeCode) {
         Long storeId = storeDashboardService.getStoreId(storeCode);
-        List<SaleEntity> sales = saleRepository.findByStoreIdOrderBySaleDateDesc(storeId);
+        List<SaleEntity> sales = saleRepository.findByStoreIdAndAmountIsNotNullOrderBySaleDateDesc(storeId);
         List<ManagerSalesResponse> responses = new ArrayList<>();
 
         for (SaleEntity sale : sales) {
