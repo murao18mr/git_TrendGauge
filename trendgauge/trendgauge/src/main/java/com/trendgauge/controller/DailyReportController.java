@@ -35,8 +35,10 @@ public class DailyReportController {
     public String dailyReport(Model model, Authentication authentication){
         String storeCode = authentication.getName();
         Long storeId = storeDashboardService.getStoreId(storeCode);
+        Long dailyTarget = storeDashboardService.dailyTarget(storeId);
 
         model.addAttribute("dailyReportInput", new DailyReportInput());
+        model.addAttribute("dailyTarget", dailyTarget);
         model.addAttribute("todayMemos", memoService.getTodayMemos(storeId, LocalDate.now()));
         return "sales/daily-report";
     }
@@ -52,6 +54,9 @@ public class DailyReportController {
         if(br.hasErrors()){
             String storeCode = authentication.getName();
             Long storeId = storeDashboardService.getStoreId(storeCode);
+            Long dailyTarget = storeDashboardService.dailyTarget(storeId);
+
+            model.addAttribute("dailyTarget", dailyTarget);
             model.addAttribute("todayMemos", memoService.getTodayMemos(storeId, LocalDate.now()));
             return "sales/daily-report";
         }

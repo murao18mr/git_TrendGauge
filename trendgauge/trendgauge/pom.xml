@@ -98,6 +98,11 @@
 			<artifactId>commons-csv</artifactId>
 			<version>1.14.1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.slack.api</groupId>
+			<artifactId>slack-api-client</artifactId>
+			<version>1.51.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
