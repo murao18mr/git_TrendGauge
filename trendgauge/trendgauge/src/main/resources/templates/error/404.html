@@ -11,7 +11,10 @@
         <div class="container text-center py-5">
             <h2>404 - Not Found</h2>
             <p>ページが見つかりません。</p>
-            <a th:href="@{/login}">トップに戻る</a>
+            <div class="d-flex justify-content-center gap-5">
+                <a th:href="@{/login}">店舗ログインページに戻る</a>
+                <a th:href="@{/admin/login}">管理者ログインページに戻る</a>
+            </div>
         </div>
     </main>
 

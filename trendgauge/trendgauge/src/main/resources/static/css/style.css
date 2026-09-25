@@ -203,3 +203,9 @@ html, body {
 .table .sunday td {
     color: red;
 }
+
+/*管理者ページ*/
+
+.shortcut-button {
+    width: 220px;
+}

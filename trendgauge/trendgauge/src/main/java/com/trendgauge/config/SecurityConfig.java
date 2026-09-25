@@ -26,6 +26,10 @@ public class SecurityConfig {
                         .requestMatchers("/manager/**").hasRole("STORE_MANAGER")
                         .requestMatchers("/main/**", "/sales/new", "/sales/import").hasRole("STORE_TERMINAL")
                         .anyRequest().authenticated()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/admin/logout")
+                        .logoutSuccessUrl("/admin/login")
                 );
         return http.build();
     }

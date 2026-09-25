@@ -2,19 +2,42 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>管理者ダッシュボード - TrendGauge</title>
+    <title>本部総合ダッシュボード - TrendGauge</title>
+
 </head>
 <body>
+<div th:replace="~{layout/index :: layout(~{::title}, ~{::#content})}">
+    <main id="content">
+        <header th:replace="~{fragments/admin-header :: admin-header}"></header>
+        <div class="container py-5">
 
-
-
-<h1>メインページだよ</h1>
-
+            <div class="row justify-content-center">
+                <div class="col-md-11">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h3>本部総合ダッシュボード</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="card mb-5 p-2 setting-section">
+                                <h5>全店舗売上サマリー（当月）</h5>
+                            </div>
+                            <div class="card mb-5 p-2 setting-section">
+                                <h5>各管理機能ショートカット</h5>
+                                <div class="d-flex justify-content-center gap-5 my-3">
+                                    <a th:href="@{/admin/ranking}" class="btn btn-primary px-4 shortcut-button">全店舗ランキング</a>
+                                    <a th:href="@{/admin/export}" class="btn btn-primary px-4 shortcut-button">データ出力</a>
+                                    <a th:href="@{/admin/account}" class="btn btn-primary px-4 shortcut-button">アカウント・店舗管理</a>
+                                </div>
+                            </div>
+                            <div class="card mb-5 p-2 setting-section">
+                                <h5>全店舗予算達成率TOP3</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </div>
-
-</main>
-
-</div>
-
 </body>
 </html>
