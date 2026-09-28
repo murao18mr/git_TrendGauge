@@ -20,17 +20,54 @@
                         <div class="card-body p-4">
                             <div class="card mb-5 p-2 setting-section">
                                 <h5>全店舗売上サマリー（当月）</h5>
+
+                                <div class="row text-center my-3">
+                                    <div class="col-md-4">
+                                        <h6>全店舗売上</h6>
+                                        <p th:text="${monthlyTotalSales != null ? #numbers.formatInteger(monthlyTotalSales, 0, 'COMMA') + '円' : '-'}"></p>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <h6>予算達成率</h6>
+                                        <p th:text="${monthlyBudgetRatio != null ? monthlyBudgetRatio + '%' : '-'}"></p>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <h6>稼働店舗数</h6>
+                                        <p th:text="${activeStoreCount + '店舗'}"></p>
+                                    </div>
+                                </div>
                             </div>
+
                             <div class="card mb-5 p-2 setting-section">
                                 <h5>各管理機能ショートカット</h5>
                                 <div class="d-flex justify-content-center gap-5 my-3">
-                                    <a th:href="@{/admin/ranking}" class="btn btn-primary px-4 shortcut-button">全店舗ランキング</a>
+                                    <a th:href="@{/admin/ranking}" class="btn btn-primary px-4 shortcut-button">全店舗ランキング管理</a>
                                     <a th:href="@{/admin/export}" class="btn btn-primary px-4 shortcut-button">データ出力</a>
                                     <a th:href="@{/admin/account}" class="btn btn-primary px-4 shortcut-button">アカウント・店舗管理</a>
                                 </div>
                             </div>
-                            <div class="card mb-5 p-2 setting-section">
+                            <div class="card mb-2 p-2 setting-section">
                                 <h5>全店舗予算達成率TOP3</h5>
+
+                                <div class="table-responsive my-3">
+                                    <table class="table table-bordered text-center align-middle">
+                                        <thead>
+                                        <tr>
+                                            <th>順位</th>
+                                            <th>店舗名</th>
+                                            <th>予算達成率</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="ranking, stat : ${budgetRanking}">
+                                            <td th:text="${stat.count}"></td>
+                                            <td th:text="${ranking.storeName}"></td>
+                                            <td th:text="${ranking.ratio != null ? ranking.ratio + '%' : '-'}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>

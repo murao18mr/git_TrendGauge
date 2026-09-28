@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>全店舗ランキング - TrendGauge</title>
+</head>
+<body>
+<div th:replace="~{layout/index :: layout(~{::title}, ~{::#content})}">
+    <main id="content">
+        <header th:replace="~{fragments/admin-header :: admin-header}"></header>
+        <div class="container py-5">
+
+            <div class="row justify-content-center">
+                <div class="col-md-11">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h3>全店舗ランキング管理</h3>
+                        </div>
+                        <div class="card-body p-4">
+
+                            <div class="row align-items-center mb-5">
+                                <div class="col-md-9">
+                                    <div class="card p-3 setting-section">
+                                        <h5>絞り込み条件</h5>
+
+                                        <form th:action="@{/admin/ranking}" method="get">
+                                            <div class="d-flex justify-content-center align-items-end gap-4 my-3">
+                                                <div>
+                                                    <label for="targetMonth" class="form-label">対象月</label>
+                                                    <input type="month" id="targetMonth" name="targetMonth"
+                                                           class="form-control ranking-search"
+                                                           th:value="${targetMonth}">
+                                                </div>
+                                                <div>
+                                                    <label for="sortOrder" class="form-label">並び順</label>
+                                                    <select id="sortOrder" name="sortOrder"
+                                                            class="form-select ranking-search">
+                                                        <option value="sales" th:selected="${sortOrder == 'sales'}">
+                                                            売上
+                                                        </option>
+                                                        <option value="budget" th:selected="${sortOrder == 'budget'}">
+                                                            予算達成率
+                                                        </option>
+                                                        <option value="ratio" th:selected="${sortOrder == 'ratio'}">
+                                                            昨対比
+                                                        </option>
+                                                    </select>
+                                                </div>
+
+                                                <button type="submit" class="btn btn-primary px-4">
+                                                    <i class="bi bi-search"></i>
+                                                    検索
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 text-center align-items-center justify-content-center">
+                                    <button type="button" class="btn btn-primary px-4 btn-lg">
+                                        CSVダウンロード
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card mb-5 p-3 setting-section">
+                                <h5>全店舗ランキング</h5>
+
+                                <div class="table-responsive my-3">
+                                    <table class="table table-bordered text-center align-middle">
+                                        <thead>
+                                        <tr>
+                                            <th>順位</th>
+                                            <th>店舗名</th>
+                                            <th>売上実績</th>
+                                            <th>月間予算</th>
+                                            <th>予算達成率</th>
+                                            <th>昨対比</th>
+                                            <th>アクション</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="store, stat : ${ranking}">
+                                            <td th:text="${stat.count}"></td>
+                                            <td th:text="${store.storeName}"></td>
+                                            <td th:text="${store.sales != null ? #numbers.formatInteger(store.sales, 1, 'COMMA') : '-'}"></td>
+                                            <td th:text="${store.targetAmount != null ? #numbers.formatInteger(store.targetAmount, 1, 'COMMA') : '-'}"></td>
+                                            <td th:text="${store.budgetRatio != null ? store.budgetRatio + '%' : '-'}"></td>
+                                            <td th:text="${store.ratio != null ? store.ratio + '%' : '-'}"></td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary btn-sm">
+                                                    店舗詳細
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
