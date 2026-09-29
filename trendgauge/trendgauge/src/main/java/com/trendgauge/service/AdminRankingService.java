@@ -3,12 +3,18 @@ package com.trendgauge.service;
 import com.trendgauge.model.entity.StoreEntity;
 import com.trendgauge.model.entity.TargetEntity;
 import com.trendgauge.model.response.AdminRankingResponse;
+import com.trendgauge.model.response.CategorySalesResponse;
+import com.trendgauge.model.response.ColorSalesResponse;
+import com.trendgauge.model.response.SalesTrendResponse;
 import com.trendgauge.repository.StoreRepository;
 import com.trendgauge.repository.TargetRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -133,5 +139,45 @@ public class AdminRankingService {
                     Comparator.nullsLast(Comparator.reverseOrder())));
         }
         return ranking;
+    }
+
+    public StoreEntity getStore(Long storeId, Long companyId) {
+        List<StoreEntity> stores = getCompanyStores(companyId);
+
+        for (StoreEntity store : stores) {
+            if (store.getId().equals(storeId)) {
+                return store;
+            }
+        }
+
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+    }
+
+    public List<SalesTrendResponse> getStoreSales(Long storeId, LocalDate baseDate) {
+        return storeDashboardService.getWeeklySales(storeId, baseDate);
+    }
+
+    public List<CategorySalesResponse> getStoreCategorySales(Long storeId, LocalDate baseDate) {
+        return storeDashboardService.getCategorySales(storeId, baseDate);
+    }
+
+    public List<ColorSalesResponse> getStoreColorSales(Long storeId, LocalDate baseDate) {
+        return storeDashboardService.getColorSales(storeId, baseDate);
+    }
+
+    public byte[] createCsv(List<AdminRankingResponse> ranking) {
+        StringBuilder csv = new StringBuilder();
+
+        csv.append("店舗名,売上,月間予算,予算達成率,昨対比\n");
+
+        for (AdminRankingResponse data : ranking) {
+            csv.append(data.getStoreName()).append(",");
+            csv.append(data.getSales()).append(",");
+            csv.append(data.getTargetAmount()).append(",");
+            csv.append(data.getBudgetRatio()).append(",");
+            csv.append(data.getRatio()).append("\n");
+        }
+
+        return ("\uFEFF" + csv).getBytes(StandardCharsets.UTF_8);
     }
 }

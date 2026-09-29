@@ -213,3 +213,23 @@ html, body {
 .ranking-search {
     width: 250px;
 }
+
+.store-viewing-area {
+    background-color: #FFFCF7;
+    border-left: 5px solid #CD659F;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.viewing-link {
+    color: #000000;
+
+}
+
+.viewing-link:focus {
+    color: #000000;
+}
+
+.viewing-link:hover {
+    color: #4A4A4A;
+}

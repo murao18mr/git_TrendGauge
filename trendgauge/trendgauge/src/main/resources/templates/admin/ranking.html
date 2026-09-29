@@ -57,9 +57,10 @@
                                 </div>
 
                                 <div class="col-md-3 text-center align-items-center justify-content-center">
-                                    <button type="button" class="btn btn-primary px-4 btn-lg">
+                                    <a th:href="@{/admin/ranking/csv(targetMonth=${targetMonth}, sortOrder=${sortOrder})}"
+                                       class="btn btn-primary px-4 btn-lg">
                                         CSVダウンロード
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
 
@@ -88,9 +89,10 @@
                                             <td th:text="${store.budgetRatio != null ? store.budgetRatio + '%' : '-'}"></td>
                                             <td th:text="${store.ratio != null ? store.ratio + '%' : '-'}"></td>
                                             <td>
-                                                <button type="button" class="btn btn-primary btn-sm">
+                                                <a th:href="@{/admin/store-detail(storeId=${store.storeId})}"
+                                                   class="btn btn-primary btn-sm">
                                                     店舗詳細
-                                                </button>
+                                                </a>
                                             </td>
                                         </tr>
                                         </tbody>
