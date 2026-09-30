@@ -233,3 +233,7 @@ html, body {
 .viewing-link:hover {
     color: #4A4A4A;
 }
+
+.export-button {
+    width: 200px;
+}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>データ出力 - TrendGauge</title>
+
+</head>
+<body>
+<div th:replace="~{layout/index :: layout(~{::title}, ~{::#content})}">
+    <main id="content">
+        <header th:replace="~{fragments/admin-header :: admin-header}"></header>
+        <div class="container py-5">
+
+            <div class="row justify-content-center">
+                <div class="col-md-11">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h3>データ出力</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <h5>出力条件設定</h5>
+
+                            <div class="ps-4">
+                                <form th:action="@{/admin/export}" method="post">
+                                    <div class="mb-2">
+                                        <label class="form-label">出力内容</label>
+                                        <div>
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" id="daily" name="data-type"
+                                                       value="daily" class="form-check-input" checked>
+                                                <label for="daily" class="form-check-label">日次売上明細</label>
+                                            </div>
+
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" id="monthly" name="data-type"
+                                                       value="monthly" class="form-check-input">
+                                                <label for="monthly" class="form-check-label">月間売上集計</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label for="store-id" class="form-label short-input">対象店舗</label>
+                                        <select id="store-id" name="store-id" class="form-select short-input">
+                                            <option value="">全店舗</option>
+                                            <option th:each="store : ${stores}"
+                                                    th:value="${store.id}"
+                                                    th:text="${store.storeName}">
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-2" id="date-range-area">
+                                        <label for="start-date" class="form-label">対象期間</label>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input type="date" id="start-date" name="start-date" th:value="${startDate}"
+                                                   class="form-control short-input">
+                                            <span>～</span>
+                                            <input type="date" id="end-date" name="end-date" th:value="${endDate}"
+                                                   class="form-control short-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2" id="target-month-area" style="display: none;">
+                                        <label for="target-month" class="form-label">対象月</label>
+                                        <input type="month" id="target-month" name="target-month"
+                                               th:value="${targetMonth}" class="form-control short-input">
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label">出力形式</label>
+                                        <div>
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" id="csv" name="format"
+                                                       value="csv" class="form-check-input" checked>
+                                                <label for="csv" class="form-check-label">CSV</label>
+                                            </div>
+
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" id="pdf" name="format"
+                                                       value="pdf" class="form-check-input">
+                                                <label for="pdf" class="form-check-label">PDF</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-center gap-5 mt-3">
+                                        <a th:href="@{/admin/main}"
+                                           class="btn btn-secondary px-2 export-button">
+                                            キャンセル
+                                        </a>
+                                        <button type="submit"
+                                                class="btn btn-primary px-2 export-button">
+                                            データを出力・ダウンロード
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="/js/admin-export.js"></script>
+    </main>
+</div>
+</body>
+</html>
