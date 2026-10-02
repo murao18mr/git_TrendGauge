@@ -2,6 +2,7 @@ package com.trendgauge.model.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -36,10 +37,16 @@ public class StoreEntity {
     @Column(name = "closing_time")
     private LocalTime closingTime;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     public StoreEntity() {
     }
 
-    public StoreEntity(Long id, Long companyId, Long mappingId, String storeName, String storeCode, String status, String managerPin, LocalTime openingTime, LocalTime closingTime) {
+    public StoreEntity(Long id, Long companyId, Long mappingId, String storeName, String storeCode, String status, String managerPin, LocalTime openingTime, LocalTime closingTime, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.companyId = companyId;
         this.mappingId = mappingId;
@@ -49,6 +56,8 @@ public class StoreEntity {
         this.managerPin = managerPin;
         this.openingTime = openingTime;
         this.closingTime = closingTime;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public Long getId() {
@@ -121,5 +130,21 @@ public class StoreEntity {
 
     public void setClosingTime(LocalTime closingTime) {
         this.closingTime = closingTime;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
