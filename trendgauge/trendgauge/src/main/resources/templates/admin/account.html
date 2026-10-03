@@ -131,15 +131,32 @@
                                             <th>店舗名</th>
                                             <th>メールアドレス</th>
                                             <th>状態</th>
+                                            <th>営業時間</th>
                                             <th>アクション</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr th:each="store : ${storeAccounts}">
+                                        <tr th:each="store : ${storeAccounts}"
+                                            th:attr="data-store-id=${store.storeId},
+                                            data-store-code=${store.storeCode},
+                                            data-store-name=${store.storeName},
+                                            data-email=${store.email},
+                                            data-status=${store.status},
+                                            data-opening-time=${store.openingTime},
+                                            data-closing-time=${store.closingTime}">
+
                                             <td th:text="${store.storeCode}"></td>
                                             <td th:text="${store.storeName}"></td>
                                             <td th:text="${store.email}"></td>
                                             <td th:text="${store.statusText}"></td>
+                                            <td>
+                                                <span th:if="${store.openingTime != null and store.closingTime != null}"
+                                                      th:text="${store.openingTime + ' ～ ' + store.closingTime}">
+                                                </span>
+                                                <span th:unless="${store.openingTime != null and store.closingTime != null}">
+                                                    未設定
+                                                </span>
+                                            </td>
                                             <td class="py-3">
                                                 <div class="d-flex justify-content-around">
                                                     <button type="button" class="btn btn-primary px-4 btn-sm"
@@ -175,9 +192,59 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
-
                         <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="edit-store-code" class="form-label">店舗コード</label>
+                                <p id="edit-store-code-error" class="error-message"></p>
+                                <input type="text" id="edit-store-code" class="form-control">
+                            </div>
 
+                            <div class="mb-3">
+                                <label for="edit-store-name" class="form-label">店舗名</label>
+                                <p id="edit-store-name-error" class="error-message"></p>
+                                <input type="text" id="edit-store-name" class="form-control">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="edit-email" class="form-label">メールアドレス</label>
+                                <p id="edit-email-error" class="error-message"></p>
+                                <input type="email" id="edit-email" class="form-control">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">状態</label>
+                                <div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio"
+                                               id="edit-status-active"
+                                               name="edit-status"
+                                               value="active"
+                                               class="form-check-input">
+                                        <label for="edit-status-active" class="form-check-label">
+                                            営業中
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio"
+                                               id="edit-status-closed"
+                                               name="edit-status"
+                                               value="closed"
+                                               class="form-check-input">
+                                        <label for="edit-status-closed" class="form-check-label">
+                                            閉店
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">営業時間</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="time" id="edit-opening-time" class="form-control">
+                                    <span>～</span>
+                                    <input type="time" id="edit-closing-time" class="form-control">
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer justify-content-center gap-5">
                             <button type="button" class="btn btn-secondary action-button"
@@ -219,10 +286,12 @@
                     </div>
                 </div>
             </div>
-
         </div>
-        <script src="/js/admin-account.js"></script>
     </main>
 </div>
+<button type="button" id="back-to-top" class="btn btn-primary">
+    ↑ TOP
+</button>
+<script src="/js/admin-account.js"></script>
 </body>
 </html>

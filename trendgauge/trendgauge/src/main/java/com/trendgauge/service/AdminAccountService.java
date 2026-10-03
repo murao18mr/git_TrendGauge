@@ -3,6 +3,7 @@ package com.trendgauge.service;
 import com.trendgauge.model.entity.StoreEntity;
 import com.trendgauge.model.entity.UserEntity;
 import com.trendgauge.model.request.AdminAccountInput;
+import com.trendgauge.model.request.AdminStoreEditInput;
 import com.trendgauge.model.response.StoreAccountResponse;
 import com.trendgauge.repository.StoreRepository;
 import com.trendgauge.repository.UserRepository;
@@ -21,7 +22,7 @@ public class AdminAccountService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AdminAccountService(StoreRepository storeRepository, UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public AdminAccountService(StoreRepository storeRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.storeRepository = storeRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -39,7 +40,9 @@ public class AdminAccountService {
                     store.getStoreCode(),
                     store.getStoreName(),
                     user.map(UserEntity::getEmail).orElse(""),
-                    store.getStatus()
+                    store.getStatus(),
+                    store.getOpeningTime(),
+                    store.getClosingTime()
             ));
         }
 
@@ -53,11 +56,15 @@ public class AdminAccountService {
     @Transactional
     public void registerAccount(AdminAccountInput input, Long companyId) {
 
+        LocalDateTime now = LocalDateTime.now();
+
         if (storeRepository.findByStoreCode(input.getStoreCode()).isPresent()) {
             throw new IllegalArgumentException("店舗コードはすでに使用されています");
         }
 
-        LocalDateTime now = LocalDateTime.now();
+        if (userRepository.findByEmail(input.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("メールアドレスはすでに使用されています");
+        }
 
         StoreEntity store = new StoreEntity();
         store.setCompanyId(companyId);
@@ -81,6 +88,46 @@ public class AdminAccountService {
         user.setCreatedAt(now);
         user.setUpdatedAt(now);
 
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateStore(Long companyId, AdminStoreEditInput input) {
+        StoreEntity store = storeRepository.findById(input.getStoreId())
+                .orElseThrow(() -> new IllegalArgumentException("店舗が見つかりません"));
+
+        if (!companyId.equals(store.getCompanyId())) {
+            throw new IllegalArgumentException("この店舗を編集する権限がありません");
+        }
+
+        Optional<StoreEntity> sameCodeStore = storeRepository.findByStoreCode(input.getStoreCode());
+        if (sameCodeStore.isPresent() && !sameCodeStore.get().getId().equals(input.getStoreId())) {
+            throw new IllegalArgumentException("店舗コードはすでに使用されています");
+        }
+
+        UserEntity user = userRepository.findByStoreIdAndRole(input.getStoreId(), "store_terminal")
+                .orElseThrow(() -> new IllegalArgumentException("店舗アカウントが見つかりません"));
+
+        Optional<UserEntity> sameEmailUser = userRepository.findByEmail(input.getEmail());
+
+        if (sameEmailUser.isPresent()) {
+            UserEntity emailUser = sameEmailUser.get();
+
+            if (!input.getStoreId().equals(emailUser.getStoreId())) {
+                throw new IllegalArgumentException("メールアドレスはすでに使用されています");
+            }
+        }
+
+        store.setStoreCode(input.getStoreCode());
+        store.setStoreName(input.getStoreName());
+        store.setStatus(input.getStatus());
+        store.setOpeningTime(input.getOpeningTime());
+        store.setClosingTime(input.getClosingTime());
+        store.setUpdatedAt(LocalDateTime.now());
+        storeRepository.save(store);
+
+        user.setEmail(input.getEmail());
+        user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
     }
 }

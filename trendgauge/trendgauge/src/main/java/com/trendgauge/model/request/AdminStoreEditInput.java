@@ -1,8 +1,8 @@
-package com.trendgauge.model.response;
+package com.trendgauge.model.request;
 
 import java.time.LocalTime;
 
-public class StoreAccountResponse {
+public class AdminStoreEditInput {
     private Long storeId;
     private String storeCode;
     private String storeName;
@@ -11,7 +11,10 @@ public class StoreAccountResponse {
     private LocalTime openingTime;
     private LocalTime closingTime;
 
-    public StoreAccountResponse(Long storeId, String storeCode, String storeName, String email, String status, LocalTime openingTime, LocalTime closingTime) {
+    public AdminStoreEditInput() {
+    }
+
+    public AdminStoreEditInput(Long storeId, String storeCode, String storeName, String email, String status, LocalTime openingTime, LocalTime closingTime) {
         this.storeId = storeId;
         this.storeCode = storeCode;
         this.storeName = storeName;
@@ -75,12 +78,5 @@ public class StoreAccountResponse {
 
     public void setClosingTime(LocalTime closingTime) {
         this.closingTime = closingTime;
-    }
-
-    public String getStatusText() {
-        if ("active".equals(status)) {
-            return "営業中";
-        }
-        return "閉店";
     }
 }

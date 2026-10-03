@@ -2,17 +2,17 @@ package com.trendgauge.controller;
 
 import com.trendgauge.model.entity.UserEntity;
 import com.trendgauge.model.request.AdminAccountInput;
+import com.trendgauge.model.request.AdminStoreEditInput;
 import com.trendgauge.model.response.StoreAccountResponse;
 import com.trendgauge.repository.UserRepository;
 import com.trendgauge.service.AdminAccountService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -68,5 +68,23 @@ public class AdminAccountController {
         ra.addFlashAttribute("successMessage", "店舗アカウントを登録しました");
 
         return "redirect:/admin/account";
+    }
+
+    @PostMapping("/account/edit")
+    @ResponseBody
+    public ResponseEntity<String> updateStore(
+            @RequestBody AdminStoreEditInput input,
+            Authentication authentication
+    ) {
+        String email = authentication.getName();
+        UserEntity admin = userRepository.findByEmailAndRole(email, "admin").orElseThrow();
+        Long companyId = admin.getCompanyId();
+
+        try {
+            adminAccountService.updateStore(companyId, input);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
