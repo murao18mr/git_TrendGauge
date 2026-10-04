@@ -237,3 +237,8 @@ html, body {
 .export-button {
     width: 200px;
 }
+
+.password-label {
+    font-size: 16px;
+    font-weight: normal;
+}

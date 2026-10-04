@@ -2,6 +2,7 @@ package com.trendgauge.controller;
 
 import com.trendgauge.model.entity.UserEntity;
 import com.trendgauge.model.request.AdminAccountInput;
+import com.trendgauge.model.request.AdminPasswordResetInput;
 import com.trendgauge.model.request.AdminStoreEditInput;
 import com.trendgauge.model.response.StoreAccountResponse;
 import com.trendgauge.repository.UserRepository;
@@ -38,6 +39,7 @@ public class AdminAccountController {
 
         model.addAttribute("storeAccounts", storeAccounts);
         model.addAttribute("adminAccountInput", new AdminAccountInput());
+        model.addAttribute("adminPasswordResetInput", new AdminPasswordResetInput());
 
         return "admin/account";
     }
@@ -82,6 +84,24 @@ public class AdminAccountController {
 
         try {
             adminAccountService.updateStore(companyId, input);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/account/password-reset")
+    @ResponseBody
+    public ResponseEntity<String> resetPassword(
+            @RequestBody AdminPasswordResetInput input,
+            Authentication authentication
+    ) {
+        String email = authentication.getName();
+        UserEntity admin = userRepository.findByEmailAndRole(email, "admin").orElseThrow();
+        Long companyId = admin.getCompanyId();
+
+        try {
+            adminAccountService.resetPassword(input, companyId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>アカウント・店舗管理 - TrendGauge</title>
@@ -259,6 +259,7 @@
                     </div>
                 </div>
             </div>
+
             <!--            パスワード再設定モーダル-->
             <div class="modal fade" id="password-modal" tabindex="-1">
                 <div class="modal-dialog">
@@ -271,6 +272,25 @@
                         </div>
 
                         <div class="modal-body">
+                            <h5><span class="password-label">パスワード再設定対象店舗：</span><span
+                                    id="password-store-name">店舗名</span></h5>
+                            <input type="hidden" id="password-store-id">
+                            <div class="my-3">
+                                <label for="reset-password" class="form-label">新しいパスワード</label>
+                                <p id="reset-password-error" class="error-message"></p>
+                                <input type="password"
+                                       id="reset-password"
+                                       class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="reset-confirm-password"
+                                       class="form-label">新しいパスワード（確認）</label>
+                                <p id="reset-confirm-password-error" class="error-message"></p>
+                                <p id="reset-password-matching-error" class="error-message"></p>
+                                <input type="password"
+                                       id="reset-confirm-password"
+                                       class="form-control">
+                            </div>
 
                         </div>
                         <div class="modal-footer justify-content-center gap-5">

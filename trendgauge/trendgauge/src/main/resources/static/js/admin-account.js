@@ -133,3 +133,107 @@ saveEditButton.addEventListener("click", function () {
             }
         });
 });
+
+//パスワード再設定モーダル
+const passwordButtons = document.querySelectorAll("button[data-bs-target='#password-modal']");
+const passwordModal = document.getElementById("password-modal");
+
+passwordButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+        const row = button.closest("tr");
+
+        document.getElementById("password-store-name").textContent = row.dataset.storeName;
+        document.getElementById("password-store-id").value = row.dataset.storeId;
+    });
+});
+
+const passwordStoreId = document.getElementById("password-store-id");
+const resetPassword = document.getElementById("reset-password");
+const resetConfirmPassword = document.getElementById("reset-confirm-password");
+
+const resetPasswordError = document.getElementById("reset-password-error");
+const resetConfirmPasswordError = document.getElementById("reset-confirm-password-error");
+const resetPasswordMatchingError = document.getElementById("reset-password-matching-error");
+
+passwordModal.addEventListener("hidden.bs.modal", function () {
+    passwordStoreId.value = "";
+    resetPassword.value = "";
+    resetConfirmPassword.value = "";
+
+    resetPasswordError.textContent = "";
+    resetConfirmPasswordError.textContent = "";
+    resetPasswordMatchingError.textContent = "";
+
+    document.getElementById("password-store-name").textContent = "店舗名";
+});
+
+const savePasswordButton = document.getElementById("save-password-button");
+
+savePasswordButton.addEventListener("click", function () {
+    const password = resetPassword.value;
+    const confirmPassword = resetConfirmPassword.value;
+
+    resetPasswordError.textContent = "";
+    resetConfirmPasswordError.textContent = "";
+    resetPasswordMatchingError.textContent = "";
+
+    let hasError = false;
+
+    if (password === "") {
+        resetPasswordError.textContent = "パスワードは必須入力です";
+        hasError = true;
+    } else if (password.length < 8) {
+        resetPasswordError.textContent = "パスワードは8文字以上で入力してください";
+        hasError = true;
+    }
+
+    if (confirmPassword === "") {
+        resetConfirmPasswordError.textContent = "確認用パスワードは必須です";
+        hasError = true;
+    }
+
+    if (password !== "" && confirmPassword !== "" && password !== confirmPassword) {
+        resetPasswordMatchingError.textContent = "パスワードと確認用パスワードが一致しません";
+        hasError = true;
+    }
+
+    if (hasError) {
+        return;
+    }
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+    const data = {
+        storeId: passwordStoreId.value,
+        password: password,
+        confirmPassword: confirmPassword
+    };
+
+    fetch("/admin/account/password-reset", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            [csrfHeader]: csrfToken
+        },
+        body: JSON.stringify(data)
+    })
+        .then(function (response) {
+            if (!response.ok) {
+                return response.text().then(function (message) {
+                    throw new Error(message);
+                });
+            }
+
+            const toast = document.getElementById("success-toast");
+            const toastBody = document.getElementById("success-toast-body");
+            toastBody.textContent = "パスワードを再設定しました。";
+            new bootstrap.Toast(toast).show();
+
+            bootstrap.Modal.getInstance(passwordModal).hide();
+        })
+        .catch(function (error) {
+            console.error(error);
+            alert(error.message);
+        });
+});

@@ -25,7 +25,7 @@ public class AdminAccountInput {
     @Size(min = 8, message = "パスワードは8文字以上で入力してください")
     private String password;
 
-    @NotBlank(message = "確認パスワードは必須です")
+    @NotBlank(message = "確認用パスワードは必須です")
     private String confirmPassword;
 
     @AssertTrue(message = "パスワードと確認用パスワードが一致しません")

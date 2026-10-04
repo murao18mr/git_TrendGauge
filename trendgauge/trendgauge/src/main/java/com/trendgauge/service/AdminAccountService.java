@@ -3,6 +3,7 @@ package com.trendgauge.service;
 import com.trendgauge.model.entity.StoreEntity;
 import com.trendgauge.model.entity.UserEntity;
 import com.trendgauge.model.request.AdminAccountInput;
+import com.trendgauge.model.request.AdminPasswordResetInput;
 import com.trendgauge.model.request.AdminStoreEditInput;
 import com.trendgauge.model.response.StoreAccountResponse;
 import com.trendgauge.repository.StoreRepository;
@@ -128,6 +129,25 @@ public class AdminAccountService {
 
         user.setEmail(input.getEmail());
         user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void resetPassword(AdminPasswordResetInput input, Long companyId) {
+
+        StoreEntity store = storeRepository.findById(input.getStoreId())
+                .orElseThrow(() -> new IllegalArgumentException("店舗が見つかりません"));
+
+        if (!companyId.equals(store.getCompanyId())) {
+            throw new IllegalArgumentException("この店舗を編集する権限がありません");
+        }
+
+        UserEntity user = userRepository.findByStoreIdAndRole(input.getStoreId(), "store_terminal")
+                .orElseThrow(() -> new IllegalArgumentException("店舗アカウントが見つかりません"));
+
+        user.setPassword(passwordEncoder.encode(input.getPassword()));
+        user.setUpdatedAt(LocalDateTime.now());
+
         userRepository.save(user);
     }
 }
