@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>外部API接続設定 - TrendGauge</title>
+
+</head>
+<body>
+<div th:replace="~{layout/index :: layout(~{::title}, ~{::#content})}">
+    <main id="content">
+        <header th:replace="~{fragments/admin-header :: admin-header}"></header>
+        <div class="container py-5">
+
+            <div class="row justify-content-center">
+                <div class="col-md-10">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h3>外部API接続設定（POSレジ連携）</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <form class="px-3">
+                                <div class="mb-2">
+                                    <label for="target-store" class="form-label">対象店舗</label>
+                                    <select id="target-store" class="form-select short-input">
+                                        <option value="">店舗を選択してください</option>
+                                        <option th:each="store : ${stores}"
+                                                th:value="${store.id}"
+                                                th:text="${store.storeName}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="pos-type" class="form-label">連携先POSレジ</label>
+                                    <select id="pos-type" class="form-select short-input">
+                                        <option value="smaregi">スマレジ</option>
+                                    </select>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="contract-id" class="form-label">契約者ID</label>
+                                        <input type="text" id="contract-id" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="api-key" class="form-label">APIキー</label>
+                                        <div class="input-group">
+                                            <input type="password" id="api-key" class="form-control">
+                                            <button type="button" id="toggle-api-key" class="btn btn-outline-secondary">
+                                                表示
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">自動同期設定</label>
+
+                                        <div class="d-flex gap-4">
+                                            <div class="form-check">
+                                                <input type="radio"
+                                                       id="auto-sync-on"
+                                                       name="auto-sync"
+                                                       value="true"
+                                                       class="form-check-input">
+                                                <label for="auto-sync-on" class="form-check-label">
+                                                    同期する
+                                                </label>
+                                            </div>
+
+                                            <div class="form-check">
+                                                <input type="radio"
+                                                       id="auto-sync-off"
+                                                       name="auto-sync"
+                                                       value="false"
+                                                       class="form-check-input"
+                                                       checked>
+                                                <label for="auto-sync-off" class="form-check-label">
+                                                    同期しない
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="sync-time" class="form-label">同期実行タイミング</label>
+                                        <input type="time"
+                                               id="sync-time"
+                                               class="form-control"
+                                               value="02:00">
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <label class="form-label mb-0">接続テスト</label>
+                                        <button type="button"
+                                                id="connection-test"
+                                                class="btn btn-outline-primary">
+                                            接続テスト
+                                        </button>
+                                    </div>
+
+                                    <div id="connection-result" class="mt-3">
+                                    </div>
+                                </div>
+
+
+                                <div class="d-flex justify-content-center gap-5">
+                                    <a th:href="@{/admin/account}" class="btn btn-secondary action-button">
+                                        キャンセル
+                                    </a>
+                                    <button type="submit"
+                                            class="btn btn-primary action-button">
+                                        保存
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="/js/admin-pos-setting.js"></script>
+</body>
+</html>
