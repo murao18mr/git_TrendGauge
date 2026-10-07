@@ -1,12 +1,12 @@
-const apiKeyInput = document.getElementById("api-key");
-const toggleApiKeyButton = document.getElementById("toggle-api-key");
+const clientSecretInput = document.getElementById("client-secret");
+const toggleClientSecretButton = document.getElementById("toggle-client-secret");
 
-toggleApiKeyButton.addEventListener("click", function () {
-    if (apiKeyInput.type === "password") {
-        apiKeyInput.type = "text";
-        toggleApiKeyButton.textContent = "非表示";
+toggleClientSecretButton.addEventListener("click", function () {
+    if (clientSecretInput.type === "password") {
+        clientSecretInput.type = "text";
+        toggleClientSecretButton.textContent = "非表示";
     } else {
-        apiKeyInput.type = "password";
-        toggleApiKeyButton.textContent = "表示";
+        clientSecretInput.type = "password";
+        toggleClientSecretButton.textContent = "表示";
     }
 });

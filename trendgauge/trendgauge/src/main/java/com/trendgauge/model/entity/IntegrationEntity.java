@@ -22,8 +22,11 @@ public class IntegrationEntity {
     @Column(name = "contract_id")
     private String contractId;
 
-    @Column(name = "api_key")
-    private String apiKey;
+    @Column(name = "client_id")
+    private String clientId;
+
+    @Column(name = "client_secret")
+    private String clientSecret;
 
     @Column(name = "auto_sync")
     private boolean autoSync;
@@ -40,12 +43,13 @@ public class IntegrationEntity {
     public IntegrationEntity() {
     }
 
-    public IntegrationEntity(Long id, Long storeId, String posType, String contractId, String apiKey, boolean autoSync, String syncTime, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public IntegrationEntity(Long id, Long storeId, String posType, String contractId, String clientId, String clientSecret, boolean autoSync, String syncTime, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.storeId = storeId;
         this.posType = posType;
         this.contractId = contractId;
-        this.apiKey = apiKey;
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
         this.autoSync = autoSync;
         this.syncTime = syncTime;
         this.createdAt = createdAt;
@@ -84,12 +88,20 @@ public class IntegrationEntity {
         this.contractId = contractId;
     }
 
-    public String getApiKey() {
-        return apiKey;
+    public String getClientId() {
+        return clientId;
     }
 
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getClientSecret() {
+        return clientSecret;
+    }
+
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
     }
 
     public boolean isAutoSync() {
