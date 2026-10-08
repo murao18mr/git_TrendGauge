@@ -1,53 +1,43 @@
-package com.trendgauge.model.entity;
+package com.trendgauge.model.request;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
-import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "integrations")
-public class IntegrationEntity {
-    public static final String TABLE_NAME = "integrations";
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "store_id")
+public class AdminPosSettingInput {
+    @NotNull(message = "対象店舗を選択してください")
     private Long storeId;
 
-    @Column(name = "pos_type")
+    @NotBlank(message = "連携先POSレジを選択してください")
     private String posType;
 
-    @Column(name = "contract_id")
+    @NotBlank(message = "契約者IDは必須入力です")
+    @Size(max = 255, message = "契約者IDは255文字以内で入力してください")
     private String contractId;
 
-    @Column(name = "client_id")
+    @NotBlank(message = "クライアントIDは必須入力です")
+    @Size(max = 255, message = "クライアントIDは255文字以内で入力してください")
     private String clientId;
 
-    @Column(name = "client_secret")
     private String clientSecret;
 
-    @Column(name = "smaregi_store_id")
+    @Size(max = 20, message = "スマレジ店舗IDは20文字以内で入力してください")
     private String smaregiStoreId;
 
-    @Column(name = "auto_sync")
     private boolean autoSync;
 
-    @Column(name = "sync_time")
-    private String syncTime;
+    @NotBlank(message = "同期時刻は必須入力です")
+    @Pattern(
+            regexp = "^([01]\\d|2[0-3]):[0-5]\\d$",
+            message = "同期時刻を正しく入力してください"
+    )
+    private String syncTime = "02:00";
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    public IntegrationEntity() {
+    public AdminPosSettingInput() {
     }
 
-    public IntegrationEntity(Long id, Long storeId, String posType, String contractId, String clientId, String clientSecret, String smaregiStoreId, boolean autoSync, String syncTime, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
+    public AdminPosSettingInput(Long storeId, String posType, String contractId, String clientId, String clientSecret, String smaregiStoreId, boolean autoSync, String syncTime) {
         this.storeId = storeId;
         this.posType = posType;
         this.contractId = contractId;
@@ -56,16 +46,6 @@ public class IntegrationEntity {
         this.smaregiStoreId = smaregiStoreId;
         this.autoSync = autoSync;
         this.syncTime = syncTime;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getStoreId() {
@@ -131,21 +111,4 @@ public class IntegrationEntity {
     public void setSyncTime(String syncTime) {
         this.syncTime = syncTime;
     }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }
-

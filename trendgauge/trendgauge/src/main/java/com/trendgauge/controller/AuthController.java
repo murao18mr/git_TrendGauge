@@ -26,7 +26,7 @@ import java.util.List;
 public class AuthController {
 
     private final StoreLoginService storeLoginService;
-    public final AdminLoginService adminLoginService;
+    private final AdminLoginService adminLoginService;
     private final ManagerPinService managerPinService;
     private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 

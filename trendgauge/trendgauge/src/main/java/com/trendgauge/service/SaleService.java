@@ -29,4 +29,14 @@ public class SaleService {
         }
         return existingSale.get();
     }
+
+    public void savePosSales(Long storeId, LocalDate saleDate, long amount) {
+
+        SaleEntity sale = getOrCreateSale(storeId, saleDate);
+
+        sale.setAmount(amount);
+        sale.setUpdatedAt(LocalDateTime.now());
+
+        saleRepository.save(sale);
+    }
 }

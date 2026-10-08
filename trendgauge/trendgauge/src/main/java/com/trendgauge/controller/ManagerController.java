@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ManagerController {
 
     @GetMapping("/menu")
-    public String ManagerMenuPage(){
+    public String managerMenuPage(){
         return"/manager/menu";
     }
 }
