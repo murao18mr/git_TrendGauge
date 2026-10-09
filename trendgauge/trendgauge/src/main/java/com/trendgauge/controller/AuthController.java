@@ -68,6 +68,7 @@ public class AuthController {
                             List.of(new SimpleGrantedAuthority("ROLE_STORE_TERMINAL"))
                     );
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            changeSessionId(request);
             securityContextRepository.saveContext(
                     SecurityContextHolder.getContext(),
                     request,
@@ -113,6 +114,7 @@ public class AuthController {
                             List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
                     );
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            changeSessionId(request);
             securityContextRepository.saveContext(
                     SecurityContextHolder.getContext(),
                     request,
@@ -146,6 +148,7 @@ public class AuthController {
                         List.of(new SimpleGrantedAuthority("ROLE_STORE_MANAGER"))
                 );
         SecurityContextHolder.getContext().setAuthentication(newAuthentication);
+        changeSessionId(request);
         securityContextRepository.saveContext(
                 SecurityContextHolder.getContext(),
                 request,
@@ -168,11 +171,17 @@ public class AuthController {
                         List.of(new SimpleGrantedAuthority("ROLE_STORE_TERMINAL"))
         );
         SecurityContextHolder.getContext().setAuthentication(newAuthentication);
+        changeSessionId(request);
         securityContextRepository.saveContext(
                 SecurityContextHolder.getContext(),
                 request,
                 response
         );
         return "redirect:/main";
+    }
+
+    private void changeSessionId(HttpServletRequest request) {
+        request.getSession();
+        request.changeSessionId();
     }
 }

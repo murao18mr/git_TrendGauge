@@ -1,7 +1,3 @@
-document.getElementById("back-to-top").addEventListener("click", function () {
-    window.scrollTo({top: 0, behavior: "smooth"});
-});
-
 const salesButton = document.getElementById("sales");
 const keywordButton = document.getElementById("keyword");
 const salesArea = document.getElementById("sales-area");
@@ -23,6 +19,9 @@ function showArea(area) {
     keywordArea.style.display = "none";
 
     area.style.display = "block";
+
+    document.getElementById("search-area").style.display =
+        area === salesArea ? "block" : "none";
 }
 
 salesButton.addEventListener("click", function () {
@@ -316,11 +315,22 @@ function displayKeywordResults(keyword, results) {
     results.forEach(function (result) {
         const row = document.createElement("tr");
 
-        row.innerHTML =
-            "<td>" + result.saleDate + "</td>" +
-            "<td>" + (result.amount != null ? result.amount + "円" : "-") + "</td>" +
-            "<td>" + (result.weather || "-") + "</td>" +
-            "<td>" + result.text + "</td>";
+        const dateCell = document.createElement("td");
+        dateCell.textContent = result.saleDate;
+
+        const amountCell = document.createElement("td");
+        amountCell.textContent = result.amount != null ? result.amount + "円" : "-";
+
+        const weatherCell = document.createElement("td");
+        weatherCell.textContent = result.weather || "-";
+
+        const textCell = document.createElement("td");
+        textCell.textContent = result.text || "";
+
+        row.appendChild(dateCell);
+        row.appendChild(amountCell);
+        row.appendChild(weatherCell);
+        row.appendChild(textCell);
 
         body.appendChild(row);
     });

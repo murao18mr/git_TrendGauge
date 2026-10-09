@@ -232,3 +232,8 @@ form.addEventListener("submit", function () {
 
     setMappingHidden();
 });
+
+document.getElementById("csv-submit")?.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+});

@@ -37,13 +37,13 @@ function activeTab(button) {
 ratioButton.addEventListener("click", function () {
     activeTab(ratioButton);
     showArea(ratioArea);
-    loadRanking("/main/ratio", "ratioRankingChart", ratioRankingChart);
+    loadRanking("/main/ratio", "ratioRankingChart");
 });
 
 budgetButton.addEventListener("click", function () {
     activeTab(budgetButton);
     showArea(budgetArea);
-    loadRanking("/main/budget", "budgetRankingChart", budgetRankingChart);
+    loadRanking("/main/budget", "budgetRankingChart");
 });
 
 salesButton.addEventListener("click", function () {
@@ -76,11 +76,7 @@ if (view === "color") {
     showArea(colorArea);
 }
 
-
-let ratioRankingChart;
-let budgetRankingChart;
-
-function loadRanking(url, canvasId, chartInstance) {
+function loadRanking(url, canvasId) {
     fetch(url)
         .then(response => response.json())
         .then(data => {
@@ -101,14 +97,17 @@ function loadRanking(url, canvasId, chartInstance) {
             }
 
             const canvas = document.getElementById(canvasId);
+            const currentStoreId = Number(canvas.dataset.storeId);
 
             const chartContainer = canvas.parentElement;
             chartContainer.style.height = chartHeight + "px";
 
-            if (chartInstance) {
-                chartInstance.destroy();
+            const existingChart = Chart.getChart(canvasId);
+
+            if (existingChart) {
+                existingChart.destroy();
             }
-            const chart = new Chart(canvas, {
+            new Chart(canvas, {
                 type: "bar",
                 plugins: [ChartDataLabels],
                 data: {
@@ -186,6 +185,15 @@ function loadRanking(url, canvasId, chartInstance) {
                         },
                         y: {
                             ticks: {
+                                color: function (context) {
+                                    const store = data[context.index];
+
+                                    if (store && Number(store.storeId) === currentStoreId) {
+                                        return "#CD659F";
+                                    }
+
+                                    return "#666666";
+                                },
                                 font: {
                                     weight: "bold",
                                     size: 14
@@ -196,7 +204,7 @@ function loadRanking(url, canvasId, chartInstance) {
                 }
             });
 
-            return chart;
+
         });
 }
 
@@ -437,7 +445,7 @@ function setupChart(area, loadChart) {
     updateNextWeekButton(area.querySelector(".next-week"));
 }
 
-loadRanking("/main/ratio", "ratioRankingChart", ratioRankingChart);
+loadRanking("/main/ratio", "ratioRankingChart");
 activeTab(ratioButton);
 
 setupChart(salesArea, loadSalesChart);

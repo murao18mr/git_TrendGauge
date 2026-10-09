@@ -21,13 +21,9 @@ import java.util.List;
 @RequestMapping("/manager/sales")
 public class ManagerSalesController {
     private final ManagerSalesService managerSalesService;
-    private final MemoService memoService;
-    private final ReportService reportService;
 
-    public ManagerSalesController(ManagerSalesService managerSalesService, MemoService memoService, ReportService reportService){
+    public ManagerSalesController(ManagerSalesService managerSalesService) {
         this.managerSalesService = managerSalesService;
-        this.memoService = memoService;
-        this.reportService = reportService;
     }
 
     @GetMapping("/edit")
@@ -42,14 +38,18 @@ public class ManagerSalesController {
 
     @GetMapping("/{saleId}/memos")
     @ResponseBody
-    public List<MemoEntity> getMemos(@PathVariable Long saleId){
-        return memoService.getMemos(saleId);
+    public List<MemoEntity> getMemos(@PathVariable Long saleId,
+                                     Authentication authentication) {
+        String storeCode = authentication.getName();
+        return managerSalesService.getMemos(storeCode, saleId);
     }
 
     @GetMapping("/{saleId}/report")
     @ResponseBody
-    public ResponseEntity<ReportEntity> getReport(@PathVariable Long saleId) {
-        ReportEntity report = reportService.getReport(saleId);
+    public ResponseEntity<ReportEntity> getReport(@PathVariable Long saleId,
+                                                  Authentication authentication) {
+        String storeCode = authentication.getName();
+        ReportEntity report = managerSalesService.getReport(storeCode, saleId);
 
         if (report == null) {
             return ResponseEntity.noContent().build();

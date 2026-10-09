@@ -50,7 +50,7 @@
                         <div class="card-body">
                             <div class="ranking-chart-scroll">
                                 <div class="ranking-chart-container">
-                                    <canvas id="ratioRankingChart"></canvas>
+                                    <canvas id="ratioRankingChart" th:attr="data-store-id=${storeId}"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -63,7 +63,7 @@
                         <div class="card-body">
                             <div class="ranking-chart-scroll">
                                 <div class="ranking-chart-container">
-                                    <canvas id="budgetRankingChart"></canvas>
+                                    <canvas id="budgetRankingChart" th:attr="data-store-id=${storeId}"></canvas>
                                 </div>
                             </div>
                         </div>

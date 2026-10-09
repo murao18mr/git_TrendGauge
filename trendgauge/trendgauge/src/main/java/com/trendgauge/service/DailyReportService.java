@@ -33,10 +33,16 @@ public class DailyReportService {
         sale.setUpdatedAt(LocalDateTime.now());
         SaleEntity savedSale = saleRepository.save(sale);
 
-        ReportEntity report = new ReportEntity();
-        report.setSaleId(savedSale.getId());
+        ReportEntity report = reportRepository.findBySaleId(savedSale.getId())
+                .orElse(null);
+
+        if (report == null) {
+            report = new ReportEntity();
+            report.setSaleId(savedSale.getId());
+            report.setCreatedAt(LocalDateTime.now());
+        }
+
         report.setSummary(input.getSummary());
-        report.setCreatedAt(LocalDateTime.now());
         report.setUpdatedAt(LocalDateTime.now());
         reportRepository.save(report);
     }

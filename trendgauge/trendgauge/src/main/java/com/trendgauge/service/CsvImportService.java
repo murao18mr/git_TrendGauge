@@ -14,6 +14,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -109,7 +110,8 @@ public class CsvImportService {
 
         Long mappingId = store.getMappingId();
         if (mappingId == null) {
-            throw new IllegalStateException("店舗にCSVマッピングが登録されていません");
+            int columnCount = getColumnCount(csvFile);
+            return new CsvPreviewResult(new ArrayList<>(), true, columnCount);
         }
         MappingEntity mapping = mappingRepository.findById(mappingId).orElseThrow();
 
@@ -264,6 +266,7 @@ public class CsvImportService {
         return new CsvPreviewResult(previewRows, false, 0);
     }
 
+    @Transactional
     public void importCsv(List<CsvPreviewResponse> previewRows, String storeCode) {
         StoreEntity store = storeRepository.findByStoreCode(storeCode).orElseThrow();
 

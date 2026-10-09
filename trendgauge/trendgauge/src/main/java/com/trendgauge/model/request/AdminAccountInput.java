@@ -10,7 +10,7 @@ public class AdminAccountInput {
 
     @NotBlank(message = "店舗コードは必須入力です")
     @Size(max = 20, message = "店舗コードは20文字以内で入力してください")
-    @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "半角英数字で入力してください")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "半角英数字で入力してください")
     private String storeCode;
 
     @NotBlank(message = "店長PINは必須入力です")
@@ -23,6 +23,7 @@ public class AdminAccountInput {
 
     @NotBlank(message = "パスワードは必須入力です")
     @Size(min = 8, message = "パスワードは8文字以上で入力してください")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "パスワードは半角英数字で入力してください")
     private String password;
 
     @NotBlank(message = "確認用パスワードは必須です")

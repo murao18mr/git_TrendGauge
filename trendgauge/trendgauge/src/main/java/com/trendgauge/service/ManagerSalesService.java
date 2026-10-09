@@ -213,4 +213,30 @@ public class ManagerSalesService {
 
         return results;
     }
+
+    public List<MemoEntity> getMemos(String storeCode, Long saleId) {
+        Long storeId = storeDashboardService.getStoreId(storeCode);
+
+        SaleEntity sale = saleRepository.findById(saleId)
+                .orElseThrow();
+
+        if (!sale.getStoreId().equals(storeId)) {
+            throw new IllegalStateException("この売上データを閲覧する権限がありません。");
+        }
+
+        return memoService.getMemos(saleId);
+    }
+
+    public ReportEntity getReport(String storeCode, Long saleId) {
+        Long storeId = storeDashboardService.getStoreId(storeCode);
+
+        SaleEntity sale = saleRepository.findById(saleId)
+                .orElseThrow();
+
+        if (!sale.getStoreId().equals(storeId)) {
+            throw new IllegalStateException("この売上データを閲覧する権限がありません。");
+        }
+
+        return reportRepository.findBySaleId(saleId).orElse(null);
+    }
 }

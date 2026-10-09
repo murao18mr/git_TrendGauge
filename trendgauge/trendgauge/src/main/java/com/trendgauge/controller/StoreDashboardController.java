@@ -60,6 +60,7 @@ public class StoreDashboardController {
 
         model.addAttribute("dailyTarget", dailyTarget);
         model.addAttribute("todayMemos", todayMemos);
+        model.addAttribute("storeId", storeId);
 
         return "dashboard/store";
     }

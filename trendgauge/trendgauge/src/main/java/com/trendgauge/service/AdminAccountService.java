@@ -56,7 +56,6 @@ public class AdminAccountService {
 
     @Transactional
     public void registerAccount(AdminAccountInput input, Long companyId) {
-
         LocalDateTime now = LocalDateTime.now();
 
         if (storeRepository.findByStoreCode(input.getStoreCode()).isPresent()) {
@@ -134,6 +133,17 @@ public class AdminAccountService {
 
     @Transactional
     public void resetPassword(AdminPasswordResetInput input, Long companyId) {
+
+        String password = input.getPassword();
+        String confirmPassword = input.getConfirmPassword();
+
+        if (password == null || !password.matches("[a-zA-Z0-9]{8,}")) {
+            throw new IllegalArgumentException("パスワードは半角英数字8文字以上で入力してください");
+        }
+
+        if (confirmPassword == null || !password.equals(confirmPassword)) {
+            throw new IllegalArgumentException("確認用パスワードが一致しません");
+        }
 
         StoreEntity store = storeRepository.findById(input.getStoreId())
                 .orElseThrow(() -> new IllegalArgumentException("店舗が見つかりません"));

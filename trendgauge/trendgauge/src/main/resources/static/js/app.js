@@ -15,3 +15,20 @@ if (errorScrollArea?.dataset.scrollToError === "true") {
         block: "center"
     });
 }
+
+//トップに戻る
+const backToTopButton = document.getElementById("back-to-top");
+
+if (backToTopButton) {
+    backToTopButton.addEventListener("click", function () {
+        window.scrollTo({top: 0, behavior: "smooth"});
+    });
+}
+
+const goToBottomButton = document.getElementById("go-to-bottom");
+
+if (goToBottomButton) {
+    goToBottomButton.addEventListener("click", function () {
+        window.scrollTo({top: document.documentElement.scrollHeight, behavior: "smooth"});
+    });
+}

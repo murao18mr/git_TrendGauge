@@ -8,10 +8,6 @@ if (accountForm && clear) {
         });
     });
 }
-// トップに戻る
-document.getElementById("back-to-top").addEventListener("click", function () {
-    window.scrollTo({top: 0, behavior: "smooth"});
-});
 
 // 編集モーダル
 const editButtons = document.querySelectorAll("button[data-bs-target='#edit-modal']");
@@ -182,8 +178,8 @@ savePasswordButton.addEventListener("click", function () {
     if (password === "") {
         resetPasswordError.textContent = "パスワードは必須入力です";
         hasError = true;
-    } else if (password.length < 8) {
-        resetPasswordError.textContent = "パスワードは8文字以上で入力してください";
+    } else if (!/^[a-zA-Z0-9]{8,}$/.test(password)) {
+        resetPasswordError.textContent = "パスワードは半角英数字8文字以上で入力してください";
         hasError = true;
     }
 

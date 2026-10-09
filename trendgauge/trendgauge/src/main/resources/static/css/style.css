@@ -105,6 +105,24 @@ html, body {
     max-width: 600px;
 }
 
+#back-to-top {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1000;
+}
+
+body:has(#go-to-bottom) #back-to-top {
+    bottom: 80px;
+}
+
+#go-to-bottom {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1000;
+}
+
 /*ダッシュボード*/
 #display-area {
     height: 500px;
@@ -180,11 +198,17 @@ html, body {
     border-radius: 0 0 6px 6px;
 }
 
-#back-to-top {
-    position: fixed;
-    right: 24px;
-    bottom: 24px;
-    z-index: 1000;
+#sales-table {
+    table-layout: auto;
+    width: 100%;
+}
+
+#sales-table th:nth-child(6) {
+    width: 40%;
+}
+
+#sales-table td:nth-child(6) {
+    overflow-wrap: anywhere;
 }
 
 .keyword-button.active {
