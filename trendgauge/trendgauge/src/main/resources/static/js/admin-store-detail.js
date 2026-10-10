@@ -29,21 +29,23 @@ function activeTab(button) {
 salesButton.addEventListener("click", function () {
     activeTab(salesButton);
     showArea(salesArea);
+    updateNextWeekButton(salesArea.querySelector(".next-week"));
     loadSalesChart(currentDate);
 });
 
 categoryButton.addEventListener("click", function () {
     activeTab(categoryButton);
     showArea(categoryArea);
+    updateNextWeekButton(categoryArea.querySelector(".next-week"));
     loadCategoryChart(currentDate);
 });
 
 colorButton.addEventListener("click", function () {
     activeTab(colorButton);
     showArea(colorArea);
+    updateNextWeekButton(colorArea.querySelector(".next-week"));
     loadColorChart(currentDate);
 });
-
 
 let salesTrendChart;
 let categoryChart;

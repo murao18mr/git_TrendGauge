@@ -27,7 +27,7 @@ generateReportButton.addEventListener("click", async () => {
         `【${storeName} 週報】\n` +
         `対象期間：${startDate.substring(5).replace("-", "/")} ～ ${endDate.substring(5).replace("-", "/")}\n\n` +
         `■ 売上実績\n` +
-        `週間売上：${weeklySales.toLocaleString()}円\n` +
+        `週間売上：${weeklySales != null ? weeklySales.toLocaleString() + "円" : "データなし"}\n` +
         `今週の予算達成率：${weeklyBudgetRatio != null ? weeklyBudgetRatio.toFixed(1) + "%" : "未設定"}\n` +
         `昨年同週比：${weeklyRatio != null ? weeklyRatio.toFixed(1) + "%" : "比較データなし"}\n\n` +
         `■ 売れ筋\n` +
