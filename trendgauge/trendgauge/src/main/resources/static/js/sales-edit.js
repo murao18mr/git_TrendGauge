@@ -335,3 +335,47 @@ function displayKeywordResults(keyword, results) {
         body.appendChild(row);
     });
 }
+// AI分析
+const aiAnalysisButton = document.getElementById("ai-analysis-button");
+const aiAnalysisLoading = document.getElementById("ai-analysis-loading");
+const aiAnalysisResult = document.getElementById("ai-analysis-result");
+
+aiAnalysisButton.addEventListener("click", async function () {
+
+    aiAnalysisButton.disabled = true;
+    aiAnalysisLoading.classList.remove("d-none");
+    aiAnalysisResult.classList.add("d-none");
+
+    try {
+        const csrfToken =
+            document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader =
+            document.querySelector('meta[name="_csrf_header"]').content;
+
+        const response = await fetch("/manager/sales/ai-analysis", {
+            method: "POST",
+            headers: {
+                [csrfHeader]: csrfToken
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error("AI分析に失敗しました。");
+        }
+
+        const result = await response.text();
+
+        aiAnalysisResult.textContent = result;
+        aiAnalysisResult.classList.remove("d-none");
+
+    } catch (error) {
+        aiAnalysisResult.textContent =
+            "AI分析中にエラーが発生しました。時間をおいて再度お試しください。";
+        aiAnalysisResult.classList.remove("d-none");
+        console.error(error);
+
+    } finally {
+        aiAnalysisLoading.classList.add("d-none");
+        aiAnalysisButton.disabled = false;
+    }
+});

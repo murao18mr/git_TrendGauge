@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -238,5 +239,52 @@ public class ManagerSalesService {
         }
 
         return reportRepository.findBySaleId(saleId).orElse(null);
+    }
+
+    public String getAnalysisText(
+            String storeCode,
+            LocalDate startDate,
+            LocalDate endDate) {
+
+        Long storeId = storeDashboardService.getStoreId(storeCode);
+
+        List<SaleEntity> sales =
+                saleRepository.findByStoreIdAndSaleDateBetween(
+                        storeId, startDate, endDate);
+
+        StringBuilder text = new StringBuilder();
+
+        for (SaleEntity sale : sales) {
+
+            ReportEntity report =
+                    reportRepository.findBySaleId(sale.getId()).orElse(null);
+
+            if (report != null
+                    && report.getSummary() != null
+                    && !report.getSummary().isBlank()) {
+
+                text.append("【")
+                        .append(sale.getSaleDate())
+                        .append(" 日報】\n")
+                        .append(report.getSummary())
+                        .append("\n\n");
+            }
+
+            List<MemoEntity> memos = memoService.getMemos(sale.getId());
+
+            for (MemoEntity memo : memos) {
+                if (memo.getComment() != null
+                        && !memo.getComment().isBlank()) {
+
+                    text.append("【")
+                            .append(sale.getSaleDate())
+                            .append(" メモ】\n")
+                            .append(memo.getComment())
+                            .append("\n\n");
+                }
+            }
+        }
+
+        return text.toString();
     }
 }
